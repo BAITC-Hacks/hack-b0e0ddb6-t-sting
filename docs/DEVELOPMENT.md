@@ -71,7 +71,7 @@ ESLint uses the recommended JavaScript, TypeScript, and React Hooks rules. Prett
 
 Generated dependencies, builds, and coverage output are ignored. Both tools leave `.agents/` and `.claude/` untouched to preserve vendored skill contents; Prettier also preserves `AGENTS.md` and `CLAUDE.md`. Validate skill synchronization with `diff -qr .agents/skills .claude/skills`.
 
-The unit suite has 263 tests and enforces **100% lines, branches, functions, and statements per application file**. Tests cover exact scoring, all 694,395 legal plans, Shapley contributions, replacement analysis, bounded AI tool calls and offline recovery, persistent submissions, configuration, and interactive UI states. Database queries and browser network requests are mocked at their external boundaries; unit tests need no running services.
+The unit suite enforces **100% lines, branches, functions, and statements per application file**. Tests cover exact scoring, all 694,395 legal plans, Shapley contributions, replacement analysis, bounded AI tool calls and offline recovery, council metrics/voting and durable replay, persistent submissions, configuration, and interactive UI states. Database queries and browser network requests are mocked at their external boundaries; unit tests need no running services.
 
 Framework bootstrap files are excluded with comments in `vitest.config.mts`. Verify runtime wiring against a running full stack:
 
@@ -86,7 +86,7 @@ For nondefault ports, pass the web URL followed by the API URL:
 npm run smoke -- http://localhost:5174 http://localhost:3001
 ```
 
-The smoke command checks health, the Vite proxy, page serving, the scenario, validation, the exact sample result and ranking, best replacement, invalid-plan rejection, analyst response, and leaderboard availability. It can also run without host Node when the Compose stack is up:
+The smoke command checks health, the Vite proxy, page serving, the scenario, validation, the exact sample result and ranking, best replacement, invalid-plan rejection, analyst response, leaderboard availability, and the complete council SSE/persistence/replay/apply flow. Offline checks also assert the rejected 104-cost package and 5/1/1 vote. It can run without host Node when the Compose stack is up:
 
 ```sh
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
@@ -108,9 +108,9 @@ The last two commands require `npm run build`. Vite preview uses port 4173 and s
 
 ## Browser end-to-end tests
 
-Playwright runs nine Chromium tests. Five cover the real browser → Vite proxy → NestJS → PostgreSQL connection and recovery from browser-local HTTP, payload, and network faults. Four verify the simulator: sample → replacement → optimum → analyst → persistent leaderboard; invalid and harmful plans at 390px/320px; real Tab/Shift+Tab focus containment; and scenario loading recovery.
+Playwright covers the real browser → Vite proxy → NestJS → PostgreSQL connection and recovery from HTTP, payload, and network faults. Simulator checks exercise sample → replacement → optimum → analyst → persistent leaderboard, invalid and harmful plans at 390px/320px, keyboard focus containment, and scenario loading recovery. The council check runs an offline meeting, verifies the rejected over-budget package and votes, reloads the saved session, applies its recommendation and opens the recording again.
 
-The persistence test saves a result under `E2E — тестовая команда`; repeated runs preserve its best score and add submission history. Use a disposable test database. The API startup applies committed migrations before tests begin. Browser tests force an empty Anthropic key for deterministic offline analysis; they never contact the AI provider.
+The persistence test saves a result under `E2E — тестовая команда`; repeated runs preserve its best score and add submission history. Use a disposable test database. The API startup applies committed migrations before tests begin. Browser tests force an empty OpenAI key for deterministic offline analysis; they never contact the AI provider.
 After the local Node setup above (`npm ci` and a configured `.env`), run:
 
 ```sh
@@ -136,23 +136,35 @@ The CI `e2e` job starts a separate PostgreSQL Compose project, installs Chromium
 
 ## Architecture
 
-See the [product architecture and requirement mapping](../README.md#архитектура). The browser calls same-origin `/api` endpoints through Vite; NestJS hosts the pure simulation engine, optional Anthropic analyst, and TypeORM submissions service. PostgreSQL stores submitted plans. Scenario data and the exact landscape are versioned/computed in code, not seeded into the database.
+See the [product architecture and requirement mapping](../README.md#архитектура). The browser calls same-origin `/api` endpoints through Vite; NestJS hosts the pure simulation engine, optional OpenAI analyst, and TypeORM submissions service. PostgreSQL stores submitted plans and council sessions (original plan, events and protocol in jsonb). Scenario data and the exact landscape are versioned/computed in code, not seeded into the database.
 
 `GET /api/health` returns `200` with `{"status":"ok","database":"up"}` when PostgreSQL responds. A failed query returns `503` with `{"status":"error","database":"down"}` without exposing connection details. Responses use `Cache-Control: no-store`. Missing required settings and invalid ports fail with clear startup errors; an unreachable database prevents API startup after Nest's connection retries.
 
-The stack uses React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, TypeScript 5.9, and the official Anthropic SDK. The lockfile records exact versions. The registry is open: team names are labels, not authenticated identities.
+The stack uses React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, TypeScript 5.9, and native server-side fetch for OpenAI. The lockfile records exact versions. The registry is open: team names are labels, not authenticated identities.
 
 ## Optional AI configuration
 
-| Variable            | Purpose / example                                       |
-| ------------------- | ------------------------------------------------------- |
-| `ANTHROPIC_API_KEY` | Empty selects the offline analyst; server-only secret   |
-| `AI_MODEL`          | Optional override; default `claude-sonnet-4-5-20250929` |
-| `AI_TIMEOUT_MS`     | Overall analyst deadline; default `25000` milliseconds  |
+| Variable                | Purpose / example                                             |
+| ----------------------- | ------------------------------------------------------------- |
+| `OPENAI_API_KEY`        | Empty selects offline analyst and council; server-only secret |
+| `AI_MODEL`              | Optional override; default `gpt-4.1-mini`                     |
+| `AI_COUNCIL_MODEL`      | Optional member model; defaults to `AI_MODEL`                 |
+| `AI_COUNCIL_TIMEOUT_MS` | Per-member deadline; default and maximum `12000` milliseconds |
+| `AI_TIMEOUT_MS`         | Overall analyst deadline; default `25000` milliseconds        |
 
-All variables are documented in `.env.example`. The main flow works without a key. Provider failures, malformed output, unsupported numbers, and timeouts fall back to an explicitly labelled offline report. Unit tests fake the provider at the SDK boundary; the live Anthropic path has not been verified with an actual key.
+All variables are documented in `.env.example`. The main flow works without a key. Provider failures, malformed output, unsupported numbers, and timeouts fall back to an explicitly labelled offline report. Unit tests fake the provider at the HTTP boundary; the live OpenAI path has not been verified with an actual key.
 
 ## Database migrations
+
+Council routes:
+
+- `POST /api/council/sessions` accepts `{ "plan": [...] }`, validates through the simulation engine, stores a session and returns `{ "sessionId": "uuid" }`. Shape and rule violations return 422.
+- `GET /api/council/sessions/:id` returns the original plan, ordered events, protocol, status and creation time. Unknown or malformed IDs return 404; unavailable storage returns 503.
+- `GET /api/council/sessions/:id/events` returns SSE. `data` contains the shared `CouncilEvent`; `id` is its one-based position. New subscribers receive the full history. `Last-Event-ID` or `?after=N` resumes after an offset.
+
+Events are persisted before broadcast; concurrent deputies are serialized at the storage boundary. The API uses one process per local stack. Completed sessions replay from PostgreSQL after restart. Unfinished sessions are marked failed on retrieval, preserving their prior events. There is no distributed worker or authentication; session UUIDs are local demonstration references.
+
+The client applies the engine-generated amendment or protocol plan and starts a fresh review. It never computes simulation numbers. Council unit tests use real engine calculations, fake OpenAI HTTP responses, fake storage and fake EventSource; browser/integration checks exercise the live proxy and database.
 
 TypeORM automatic schema synchronization and implicit migration execution are disabled. Compose and Playwright explicitly run `migration:run` before starting the API; local Node development requires the same command. Both the app and migration CLI load the root `.env`. Define entities under `apps/api/src` as `*.entity.ts`, then generate and inspect migrations:
 

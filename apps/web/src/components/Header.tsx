@@ -1,20 +1,23 @@
 import { checkHealth } from '../api/health';
 import { useResource } from '../hooks/useResource';
-export type Page = 'builder' | 'review' | 'registry';
+export type Page = 'builder' | 'review' | 'council' | 'registry';
 const labels = {
   builder: 'конструктор',
   review: 'результаты',
+  council: 'совет',
   registry: 'реестр',
 };
 export function Header({
   page,
   version,
   canReview,
+  canCouncil,
   onPage,
 }: {
   page: Page;
   version: string;
   canReview: boolean;
+  canCouncil?: boolean;
   onPage: (page: Page) => void;
 }) {
   const { state, retry } = useResource(checkHealth);
@@ -38,7 +41,10 @@ export function Header({
             <button
               key={key}
               aria-current={page === key ? 'page' : undefined}
-              disabled={key === 'review' && !canReview}
+              disabled={
+                (key === 'review' && !canReview) ||
+                (key === 'council' && !canCouncil)
+              }
               onClick={() => onPage(key)}
             >
               {page === key ? `[${labels[key]}]` : labels[key]}

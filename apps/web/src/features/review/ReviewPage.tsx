@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { Plan, Scenario, Swap } from '../../api/contracts';
 import { reviewPlan } from '../../api/simulation';
+import { createCouncilSession } from '../../api/council';
 import { DistrictHeatmap } from '../../components/DistrictHeatmap';
 import { Failure, Loading } from '../../components/Feedback';
 import { number, signed } from '../../components/format';
@@ -10,6 +11,7 @@ import { AiReport } from './AiReport';
 import { MoveList } from './MoveList';
 import { OptimumDialog, SwapDialog } from './ReviewDialog';
 import { ScoreHistogram } from './ScoreHistogram';
+import { Modal } from '../../components/Modal';
 import './review.css';
 
 export function ReviewPage({
@@ -17,20 +19,43 @@ export function ReviewPage({
   plan,
   onApply,
   onRegistry,
+  onCouncil,
+  onReplayCouncil,
 }: {
   scenario: Scenario;
   plan: Plan;
   onApply: (plan: Plan) => void;
   onRegistry: () => void;
+  onCouncil?: (sessionId: string) => void;
+  onReplayCouncil?: () => void;
 }) {
   const load = useCallback(() => reviewPlan(plan), [plan]);
   const { state, retry } = useResource(load);
   const [swap, setSwap] = useState<Swap | null>(null);
-  const [dialog, setDialog] = useState<'optimum' | 'submit' | null>(null);
+  const [dialog, setDialog] = useState<'optimum' | 'submit' | 'council' | null>(
+    null,
+  );
+  const [launching, setLaunching] = useState(false);
+  const [councilError, setCouncilError] = useState('');
   const close = useCallback(() => {
     setSwap(null);
     setDialog(null);
   }, []);
+  async function launchCouncil() {
+    setLaunching(true);
+    setCouncilError('');
+    try {
+      const id = await createCouncilSession(plan);
+      onCouncil?.(id);
+      setDialog(null);
+    } catch (error) {
+      setCouncilError(
+        error instanceof Error ? error.message : 'Не удалось начать заседание.',
+      );
+    } finally {
+      setLaunching(false);
+    }
+  }
   return (
     <div className="review-page">
       {state.status === 'success' && (
@@ -73,9 +98,21 @@ export function ReviewPage({
               </dd>
             </div>
           </dl>
-          <button className="outline" onClick={() => setDialog('submit')}>
-            отправить в реестр
-          </button>
+          <div className="review-actions">
+            {onCouncil && (
+              <button className="primary" onClick={() => setDialog('council')}>
+                вынести на совет →
+              </button>
+            )}
+            <button className="outline" onClick={() => setDialog('submit')}>
+              отправить в реестр
+            </button>
+            {onReplayCouncil && (
+              <button className="review-replay" onClick={onReplayCouncil}>
+                запись совета ↗
+              </button>
+            )}
+          </div>
         </section>
       )}
       <div className="workspace-grid">
@@ -140,6 +177,35 @@ export function ReviewPage({
       )}
       {dialog === 'submit' && (
         <SubmissionForm plan={plan} onClose={close} onRegistry={onRegistry} />
+      )}
+      {dialog === 'council' && (
+        <Modal title="вынести план на совет" onClose={close}>
+          <p>
+            Семь вымышленных участников обсудят ваш план. Цифры, поправки и
+            итоговый пакет проверяются движком.
+          </p>
+          <p className="muted">
+            Во время заседания можно вернуться к разбору. Запись сохранится для
+            повторного просмотра.
+          </p>
+          {councilError && (
+            <p role="alert" className="danger">
+              {councilError}
+            </p>
+          )}
+          <div className="review-council-actions">
+            <button className="outline" onClick={close}>
+              отмена
+            </button>
+            <button
+              className="primary"
+              disabled={launching}
+              onClick={launchCouncil}
+            >
+              {launching ? 'запускаем…' : 'начать заседание →'}
+            </button>
+          </div>
+        </Modal>
       )}
       {swap && (
         <SwapDialog
