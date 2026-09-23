@@ -24,14 +24,14 @@ For Node development, custom ports, troubleshooting, and database migrations, se
 
 ## Check your changes
 
-With Node.js 24.11+ in the 24.x line and npm 10:
+With Node.js 24.11+ in the 24.x line, npm 10, Bash, curl, and tar:
 
 ```sh
 npm ci
 npm run check
 ```
 
-This runs linting, formatting checks, type checking, unit tests with 100% line and branch coverage requirements, and builds. CI also checks the running Docker stack.
+This runs code and GitHub Actions workflow linting, formatting checks, type checking, unit tests with 100% line and branch coverage requirements, and builds. Workflow linting downloads pinned actionlint from GitHub, so it requires network access. CI also checks the running Docker stack. See the [validation commands](docs/DEVELOPMENT.md#commands-and-validation) to run checks individually.
 
 ## Stack and structure
 
