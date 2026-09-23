@@ -6,7 +6,11 @@ With a limited budget, a useful initiative does not necessarily make the whole c
 
 ![Plan review: score, districts, measure contributions, and recommendations](docs/images/review.png)
 
-No public demo is deployed. Local app: [localhost:5173](http://localhost:5173). [Build story](BUILD_STORY.md), [source dataset](docs/data/astana-dataset.md), [implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [external tools](docs/EXTERNAL_TOOLS.md).
+## Live demo
+
+Try the deployed app: [QOL-SIM](https://hackalem.cedra.team/).
+
+[Build story](BUILD_STORY.md), [source dataset](docs/data/astana-dataset.md), [implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [external tools](docs/EXTERNAL_TOOLS.md).
 
 ## One-command startup
 
