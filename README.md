@@ -10,7 +10,12 @@ With a limited budget, a useful initiative does not necessarily make the whole c
 
 Try the deployed app: [QOL-SIM](https://hackalem.cedra.team/).
 
-[Build story](BUILD_STORY.md), [source dataset](docs/data/astana-dataset.md), [implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [external tools](docs/EXTERNAL_TOOLS.md).
+## Doc files
+
+- [Build story](BUILD_STORY.md) — The hackathon development timeline, including product decisions, implementation milestones, and lessons from testing.
+- [Source dataset](docs/data/astana-dataset.md) — The scenario's district indicators and measure catalog, including costs, implementation lags, and effects.
+- [Implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md) — The original simulator plan, covering architecture, API contracts, implementation steps, and validation checks.
+- [External tools](docs/EXTERNAL_TOOLS.md) — The inventory of vendored agent skills, their sources and pinned revisions, attribution, licensing, and update instructions.
 
 ## One-command startup
 
