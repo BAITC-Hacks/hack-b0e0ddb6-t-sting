@@ -15,6 +15,9 @@
     "typecheck": "npm run typecheck --workspaces && tsc -p tsconfig.tests.json",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
     "check": "npm run typecheck && npm test && npm run build && npm run format:check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -28,6 +31,7 @@
     "db:down": "docker compose stop db"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
