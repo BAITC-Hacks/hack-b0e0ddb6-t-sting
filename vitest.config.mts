@@ -11,6 +11,14 @@ export default defineConfig({
           setupFiles: ['reflect-metadata'],
         },
       },
+      {
+        test: {
+          name: 'web',
+          environment: 'jsdom',
+          include: ['apps/web/tests/**/*.test.{ts,tsx}'],
+          setupFiles: ['apps/web/tests/setup.ts'],
+        },
+      },
     ],
     coverage: {
       provider: 'v8',

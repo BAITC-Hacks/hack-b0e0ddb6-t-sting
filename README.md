@@ -1,8 +1,8 @@
 # TΞSTING
 
-A TypeScript workspace for the TΞSTING hackathon team, starting with a database-connected API.
+A TypeScript workspace for the TΞSTING hackathon team, with a React web application and database-connected API.
 
-The project needs a dependable foundation for building and checking its core flow. The API provides a health endpoint that verifies a real PostgreSQL query, with shared build and test tooling at the repository root.
+The project needs a dependable foundation for building and checking its core flow. A connection page verifies the complete path from the browser through the API to PostgreSQL, with shared build and test tooling at the repository root.
 
 ## Local setup
 
@@ -16,10 +16,15 @@ npm ci
 cp .env.example .env
 ```
 
-Set the PostgreSQL connection values in `.env` to match a running local database. Then start the API:
+Set the PostgreSQL connection values in `.env` to match a running local database. Then start both applications:
 
 ```sh
-npm run dev:api
+npm run dev
+```
+
+Open http://localhost:5173 and select **Check connection**. The page shows progress, confirms a healthy stack, and offers retry after a failure. The API listens on http://localhost:3000. You can also check it directly:
+
+```sh
 curl -i http://localhost:3000/api/health
 ```
 
@@ -27,6 +32,7 @@ A healthy database returns `200` with `{"status":"ok","database":"up"}`. A faile
 
 ## Architecture
 
+- `apps/web`: React and Vite, a same-origin `/api` proxy, and accessible connection states.
 - `apps/api`: NestJS API, TypeORM database options, environment validation, and health checks.
 - `apps/api/tests`: isolated behavior tests with the database mocked at its query boundary.
 - Root: npm workspaces, shared strict TypeScript settings, Prettier, and Vitest.
@@ -54,7 +60,6 @@ Migration generation requires entities and a reachable database; there are no do
 
 ## Roadmap
 
-- Add the React web workspace and browser-to-database connection check.
 - Add Docker Compose, CI, and a live integration smoke test.
 
 A screenshot and public demo are not available yet.

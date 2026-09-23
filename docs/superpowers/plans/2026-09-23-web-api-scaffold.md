@@ -15,10 +15,10 @@
 
 ## Step 2 — Web application
 
-- [ ] Add React/Vite configuration and tests for initial/loading/success/error/retry states.
-- [ ] Test health requests for valid/malformed payloads, non-200 status, invalid JSON, network failure, and timeout.
-- [ ] Implement the connection page and same-origin API client; configure the Vite proxy.
-- [ ] Update setup documentation, run all checks, and commit `feat(web): add connected React application`.
+- [x] Add React/Vite configuration and tests for initial/loading/success/error/retry states.
+- [x] Test health requests for valid/malformed payloads, non-200 status, invalid JSON, network failure, and timeout.
+- [x] Implement the connection page and same-origin API client; configure the Vite proxy.
+- [x] Update setup documentation, run all checks, and commit `feat(web): add connected React application`.
 
 ## Step 3 — Development and verification workflow
 
