@@ -22,7 +22,7 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      include: ['apps/*/src/**/*.{ts,tsx}'],
+      include: ['apps/*/src/**/*.{ts,tsx}', 'apps/web/vite.config.ts'],
       exclude: [
         // Entry points and Nest's declarative wiring are exercised by the live smoke test.
         'apps/api/src/main.ts',

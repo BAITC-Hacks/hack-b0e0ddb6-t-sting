@@ -22,7 +22,10 @@
     "migration:run": "npm run migration:run -w @app/api",
     "migration:revert": "npm run migration:revert -w @app/api",
     "dev": "concurrently --kill-others --names api,web \"npm run dev -w @app/api\" \"npm run dev -w @app/web\"",
-    "dev:web": "npm run dev -w @app/web"
+    "dev:web": "npm run dev -w @app/web",
+    "smoke": "node scripts/smoke.mjs",
+    "db:up": "docker compose up -d --wait db",
+    "db:down": "docker compose stop db"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",

@@ -22,10 +22,10 @@
 
 ## Step 3 — Development and verification workflow
 
-- [ ] Add PostgreSQL/API/web Compose services, a development image, environment examples, and a smoke command.
-- [ ] Add CI for formatting, typechecking, coverage, builds, and live integration on main and pull requests.
-- [ ] Run the complete stack, verify direct/proxied health and migration CLI, inspect the browser, and record a screenshot.
-- [ ] Document commands, architecture, limitations, and verification; run all checks and commit `build: add container workflow and continuous integration`.
+- [x] Add PostgreSQL/API/web Compose services, a development image, environment examples, and a smoke command.
+- [x] Add CI for formatting, typechecking, coverage, builds, and live integration on main and pull requests.
+- [x] Run the complete stack, verify direct/proxied health and migration CLI, inspect the browser, and record a screenshot.
+- [x] Document commands, architecture, limitations, and verification; run all checks and commit `build: add container workflow and continuous integration`.
 
 ## Review focus
 
@@ -34,3 +34,11 @@
 - Malformed or unavailable API responses must allow a retry in the UI.
 - Nondefault ports must work in both native and container development.
 - CI and documented setup must exercise the same project commands.
+
+## Verification record
+
+- API foundation: 26 passing unit tests; 100% line and branch coverage; live PostgreSQL health response verified.
+- Web application: 43 passing unit tests; desktop and mobile connection, failure, and retry checks passed.
+- Review follow-up: seven invalid web-port cases reproduced before applying the shared port validator; the final suite has 52 passing tests and 100% coverage.
+- Container workflow: clean dependency install, healthy Compose services, direct and proxied smoke checks, migration CLI, and real database-down 503 response verified.
+- Vite 8 builds successfully; its compatibility check warns that the server-side CommonJS helper import needs revisiting if a future major switches to native config loading.
