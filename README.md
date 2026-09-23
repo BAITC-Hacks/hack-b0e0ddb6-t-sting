@@ -30,7 +30,7 @@ By the end of the build, we had sent four messages asking for expert feedback or
 
 > **Watch the five hours behind the demo.** See the team working through screens, building the app and reaching out to people who might use it—all during the same build window.
 >
-> **Build and outreach video diary — Google Drive link to be added.**
+> **[Watch the build and outreach video diary on Google Drive](https://drive.google.com/drive/folders/1x_eLS81eTITAUZYsHNEN-QBD3NDssY1t?usp=sharing).**
 
 ## Doc files
 
