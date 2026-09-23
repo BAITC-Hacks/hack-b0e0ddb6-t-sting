@@ -17,6 +17,36 @@ Try the deployed app: [QOL-SIM](https://hackalem.cedra.team/).
 - [Implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md) — The original simulator plan, covering architecture, API contracts, implementation steps, and validation checks.
 - [External tools](docs/EXTERNAL_TOOLS.md) — The inventory of vendored agent skills, their sources and pinned revisions, attribution, licensing, and update instructions.
 
+## How it works
+
+You play the mayor of a simulated Astana. Your goal is to improve life in the city with a limited budget.
+
+1. **Explore the city.** Open the [live demo](https://hackalem.cedra.team/) and look at the districts to see where schools, transport, healthcare, and other services need help.
+2. **Build a plan.** Choose five different measures, pick a district where needed, and stay within the budget of 100. You can load an example plan to get started.
+3. **Review the results.** See your city's quality-of-life score, which districts benefit, and which choices help or hurt. Read the analyst's explanation of the strengths and risks.
+4. **Improve your choices.** Try a suggested replacement and review the updated result. You can also bring the plan to the mayor's council, hear different views, and accept a proposed change.
+5. **Compare with other teams.** Submit your plan under a team name. The registry keeps your team's best score so you can compare results and try again.
+
+The city data is synthetic: this is a way to explore trade-offs and learn from decisions, not a prediction of real-world outcomes.
+
+## Tech Stack
+
+- **Language and runtime:** TypeScript 5.9, Node.js 24, and npm 10 workspaces for the shared frontend/backend repository.
+- **Frontend:** React 19, React DOM, and Vite 8 with the React plugin; CSS and SVG for the interface, district map, and charts.
+- **Backend:** NestJS 12 with its Express adapter and `reflect-metadata` for the HTTP API and application services.
+- **Simulation engine:** Plain TypeScript for plan validation, scoring, exhaustive plan comparison, exact Shapley contributions, and suggested replacements.
+- **Database:** PostgreSQL 17, TypeORM 0.3, and the `pg` driver for migrations, team submissions, and council history, including JSONB records.
+- **External AI API:** OpenAI Chat Completions, called through native server-side `fetch`, with `gpt-4.1-mini` as the default configurable model. Tool calling supports the analyst and council chair; offline templates keep the flow working without an API key.
+- **Live council updates:** Server-Sent Events (SSE), RxJS, and the browser's `EventSource` API for streaming and replaying saved session events.
+- **Environment configuration:** `dotenv` and environment variables for database settings, server-only API credentials, model selection, and timeouts.
+- **Unit and component tests:** Vitest with V8 coverage, React Testing Library, `jest-dom`, `user-event`, and jsdom; line and branch coverage are enforced at 100%.
+- **Browser and integration tests:** Playwright with Chromium, plus Node.js smoke scripts that check the running frontend, API, database, and council flow.
+- **Code quality:** ESLint, typescript-eslint, React Hooks lint rules, Prettier, and TypeScript type checking.
+- **Local development:** Docker and Docker Compose for the app and database, Nest CLI for backend builds and watch mode, `ts-node` for TypeORM tooling, and `concurrently` to run both development servers.
+- **Version control and CI:** Git, GitHub, and GitHub Actions for pull requests, static checks, coverage, builds, browser tests, and Compose smoke/migration checks.
+- **Deployment setup:** The [developer guide](docs/DEVELOPMENT.md#digitalocean-app-platform) covers DigitalOcean App Platform and Managed PostgreSQL, including pre-deploy migrations and database TLS certificates.
+- **AI development tools:** Codex and Claude Code, with shared repository instructions and vendored Vercel skills for React composition, performance, view transitions, and interface reviews. Sources and licensing are recorded in [External tools](docs/EXTERNAL_TOOLS.md).
+
 ## One-command startup
 
 Requires Docker with Compose v2. From the repository root:
@@ -156,8 +186,6 @@ React / Vite → same-origin /api proxy → NestJS
                                           │    └─ PostgreSQL jsonb → history / SSE → React
                                           └─ SubmissionsService → TypeORM → PostgreSQL
 ```
-
-Stack: React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, TypeScript 5.9, Vitest, ESLint, and Prettier. OpenAI is called through standard server-side `fetch`; visualizations use SVG and CSS.
 
 - `apps/api/src/simulation/engine`: data, validation, scoring formula, exhaustive search, exact contributions, and best replacements. No Nest or database dependency.
 - `apps/api/src/simulation`: HTTP parser and service that assembles the Review. Invalid plans do not receive a Score.
