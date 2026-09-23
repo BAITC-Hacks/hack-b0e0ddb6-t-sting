@@ -1,4 +1,4 @@
-name: Verify scaffold
+name: Verify QOL-SIM
 
 on:
   pull_request:

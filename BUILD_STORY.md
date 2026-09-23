@@ -44,3 +44,23 @@ In parallel, we're assembling the agent orchestration and the templates that wil
 The agent work also includes simulating several akims as NPC players. The aim is to let the human player inspect their decisions within the main flow and use them as a point of comparison.
 
 Outreach has moved from finding contacts to making calls: we've called seven people and are looking for pilot participants who can evaluate the solution during the build window. Their feedback is the next reality check; those evaluations have not happened yet.
+
+## September 23 — Implementing the plan-review simulator
+
+The repository now contains the city simulator flow described in the implementation plan: select five measures, review their effect, apply a better replacement, read an analyst report, and submit the plan to a PostgreSQL leaderboard. The dark monospace interface and schematic district map follow the supplied screen designs. Dataset names and real computed values replace the placeholders in those designs.
+
+We separated the calculation engine from NestJS, the database, and the LLM. Its exhaustive search reproduces all 694,395 legal plans, the example score of 56.54 at rank 566, and the global optimum of 57.24. Exact Shapley contributions explain the nonlinear critical-cell penalties and weakest-district term. A harmful plan scores 52.45, making the cost of a seemingly useful choice visible.
+
+The analyst uses a bounded tool-calling loop with OpenAI and a deterministic fallback that works without credentials. Its journal exposes tool inputs and results. A numerical-literal guard rejects unsupported values but is not a semantic fact checker. Live provider behavior still requires a real API key; provider success and failure paths are covered with test doubles.
+
+Integration testing caught a rounding inconsistency: subtracting two displayed scores gave +3.98, while the exact engine improvement rounds to +3.99. The API now supplies the improvement and optimality gap directly. Browser review also led to a correction of the contribution bars and analyst placement, and a keyboard review found a modal radio-group focus issue, now fixed and verified with real Tab/Shift+Tab navigation. The 320px responsive grid was also corrected after browser testing.
+
+The earlier learning-loop and city-events ideas remain roadmap work. The council was implemented in the extension below. The product's calculations and explanations use the fixed synthetic scenario.
+
+## Council extension
+
+The council follows the existing review: seven fictional roles derive positions and amendment candidates from engine metrics, then OpenAI writes checked speeches. A bounded chair can inspect impacts and ask the engine to evaluate packages; only checked recommendations reach the protocol. The deterministic offline path runs the same stages, including objections, a rejected over-budget package and voting.
+
+Council sessions persist their original plan, ordered events and protocol in PostgreSQL. Replayable SSE sends each event only after its write succeeds. Browser reconnection, saved replay and applying a recommendation are part of the flow. The provider adapter now uses OpenAI only through server-side fetch; no API key is required for local verification.
+
+The supplied reference contained a small numerical error: replacing M10 in Nura with M14 produces 56.62718 (displayed 56.63), not 56.64. Tests pin engine outputs without hardcoding presentation results into application behavior. LRT in Nura produces 57.20556 and the reference vote is five for, one abstention and one against.

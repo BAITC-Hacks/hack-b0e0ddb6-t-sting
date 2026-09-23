@@ -1,123 +1,130 @@
-import { useState } from 'react';
-import { checkHealth } from './api/health';
-
-const connectionStates = {
-  idle: [
-    'Ready to connect',
-    'Check the connection from your browser to the API and database.',
-  ],
-  checking: [
-    'Checking connection',
-    'Reaching the API and querying PostgreSQL…',
-  ],
-  success: [
-    'All systems connected',
-    'Your browser, NestJS API, and PostgreSQL database are talking.',
-  ],
-  error: [
-    'Connection unavailable',
-    'Make sure the API and database are running, then try again.',
-  ],
-};
-
+import { useCallback, useState } from 'react';
+import type { Plan } from './api/contracts';
+import { getScenario } from './api/simulation';
+import { Failure, Loading } from './components/Feedback';
+import { Header, type Page } from './components/Header';
+import { Builder } from './features/builder/Builder';
+import { CouncilPage } from './features/council/CouncilPage';
+import {
+  clearCouncilSession,
+  savedCouncilPlan,
+  savedCouncilSession,
+  saveCouncilPlan,
+  saveCouncilSession,
+} from './features/council/storage';
+import { ReviewPage } from './features/review/ReviewPage';
+import { Registry } from './features/submissions/Registry';
+import { useResource } from './hooks/useResource';
+import { Onboarding } from './features/onboarding/Onboarding';
+import {
+  needsOnboarding,
+  rememberOnboarding,
+} from './features/onboarding/storage';
 export function App() {
-  const [state, setState] = useState<keyof typeof connectionStates>('idle');
-  const [title, description] = connectionStates[state];
-
-  async function handleCheck() {
-    setState('checking');
-    try {
-      await checkHealth();
-      setState('success');
-    } catch {
-      setState('error');
-    }
+  const { state, retry } = useResource(getScenario);
+  const [sessionId, setSessionId] = useState(savedCouncilSession);
+  const [page, setPage] = useState<Page>(() =>
+    savedCouncilSession() ? 'council' : 'builder',
+  );
+  const [plan, setPlan] = useState<Plan>(savedCouncilPlan);
+  const [canReview, setCanReview] = useState(() =>
+    Boolean(savedCouncilSession() && savedCouncilPlan().length),
+  );
+  const [showOnboarding, setShowOnboarding] = useState(needsOnboarding);
+  const closeOnboarding = useCallback(() => {
+    rememberOnboarding();
+    setShowOnboarding(false);
+  }, []);
+  function changePlan(next: Plan) {
+    setPlan(next);
+    setCanReview(false);
+    setSessionId(null);
+    clearCouncilSession();
   }
-
+  function applyCouncilPlan(next: Plan) {
+    setPlan(next);
+    setCanReview(true);
+    saveCouncilPlan(next);
+    setPage('review');
+  }
   return (
-    <main>
-      <header className="masthead">
-        <a className="brand" href="/" aria-label="TΞSTING home">
-          <span className="brand-mark" aria-hidden="true">
-            t.
-          </span>
-          TΞSTING workspace
-        </a>
-        <span className="environment">Local development</span>
-      </header>
-
-      <section className="intro" aria-labelledby="page-title">
-        <p className="eyebrow">A foundation for what comes next</p>
-        <h1 id="page-title">
-          Your next build <br />
-          starts here.
-        </h1>
-        <p className="lede">
-          One workspace. A connected stack. Everything you need to start turning
-          an idea into a working product.
-        </p>
-        <div className="stack" aria-label="Technology stack">
-          {[
-            'React',
-            'TypeScript',
-            'Vite',
-            'NestJS',
-            'TypeORM',
-            'PostgreSQL',
-          ].map((name) => (
-            <span key={name}>{name}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className="connection" aria-labelledby="connection-title">
-        <div className="section-label">
-          <span>01 / CONNECTION</span>
-          <code>GET /api/health</code>
-        </div>
-        <div className={`connection-body ${state}`}>
-          <div className="connection-message" role="status" aria-live="polite">
-            <span className="status-dot" aria-hidden="true" />
-            <div>
-              <h2 id="connection-title">{title}</h2>
-              <p>{description}</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleCheck}
-            disabled={state === 'checking'}
-          >
-            {state === 'checking' ? 'Checking…' : 'Check connection'}
-          </button>
-        </div>
-      </section>
-
-      <section className="workspace" aria-labelledby="workspace-title">
-        <h2 id="workspace-title" className="section-label">
-          02 / YOUR WORKSPACE
-        </h2>
-        <div className="workspace-grid">
-          <article>
-            <span className="folder">apps/web</span>
-            <h3>Make it yours.</h3>
-            <p>
-              Build your interface with React, TypeScript, and Vite. Changes
-              appear as you save.
-            </p>
-          </article>
-          <article>
-            <span className="folder">apps/api</span>
-            <h3>Give it a backbone.</h3>
-            <p>
-              Add modules and endpoints in NestJS, with TypeORM ready to connect
-              your data.
-            </p>
-          </article>
-        </div>
-      </section>
-      <footer>
-        Built to get you building.<span>React → NestJS → PostgreSQL</span>
+    <main className="app-shell">
+      <Header
+        page={page}
+        version={
+          state.status === 'success' ? state.data.version : 'загрузка сценария'
+        }
+        canReview={canReview}
+        canCouncil={Boolean(sessionId)}
+        onPage={setPage}
+        onHelp={() => {
+          setPage('builder');
+          setShowOnboarding(true);
+        }}
+      />
+      {state.status === 'loading' && (
+        <section className="page-state">
+          <h1># подготовка сценария</h1>
+          <Loading>загружаем районы, показатели и меры…</Loading>
+        </section>
+      )}
+      {state.status === 'error' && (
+        <section className="page-state">
+          <h1># сценарий недоступен</h1>
+          <Failure message={state.message} retry={retry} />
+        </section>
+      )}
+      {state.status === 'success' && (
+        <>
+          {showOnboarding && <Onboarding onClose={closeOnboarding} />}
+          {page === 'builder' && (
+            <>
+              <h1 className="sr-only">Конструктор плана развития Астаны</h1>
+              <Builder
+                scenario={state.data}
+                plan={plan}
+                onChange={changePlan}
+                onReview={() => {
+                  setCanReview(true);
+                  setPage('review');
+                }}
+              />
+            </>
+          )}
+          {page === 'review' && (
+            <ReviewPage
+              key={JSON.stringify(plan)}
+              scenario={state.data}
+              plan={plan}
+              onApply={setPlan}
+              onRegistry={() => setPage('registry')}
+              onCouncil={(id) => {
+                setSessionId(id);
+                saveCouncilSession(id, plan);
+                setPage('council');
+              }}
+              onReplayCouncil={sessionId ? () => setPage('council') : undefined}
+            />
+          )}
+          {page === 'council' && sessionId && (
+            <CouncilPage
+              sessionId={sessionId}
+              scenario={state.data}
+              onBack={() => setPage(plan.length ? 'review' : 'builder')}
+              onApply={applyCouncilPlan}
+            />
+          )}
+          {page === 'registry' && (
+            <Registry onBuild={() => setPage('builder')} />
+          )}
+        </>
+      )}
+      <footer className="footer">
+        <span>Астана · симулятор городских решений</span>
+        <span>
+          условные данные / горизонт{' '}
+          {state.status === 'success' ? state.data.horizon : '—'} кварталов
+        </span>
       </footer>
     </main>
   );
