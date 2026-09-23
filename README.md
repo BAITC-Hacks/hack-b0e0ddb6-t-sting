@@ -1,167 +1,143 @@
-# TΞSTING
+# QOL-SIM — Разбор партии
 
-A TypeScript workspace for the TΞSTING hackathon team, with a React web application and database-connected API.
+AI-симулятор акима для команд, городских аналитиков и всех, кто хочет проверить последствия городских решений.
 
-[Build Story](BUILD_STORY.md) — our hackathon progress and decisions.
+При ограниченном бюджете полезная инициатива не обязательно делает весь город лучше. QOL-SIM позволяет выбрать **ровно пять мер из 14** для пяти условных районов Астаны, затем разбирает план как шахматную партию: считает Astana Quality of Life Score, вклад каждого решения, место среди всех допустимых планов и лучшие замены. Аналитик объясняет результат и компромиссы на основе расчётов движка.
 
-[External tools and agent skills](docs/EXTERNAL_TOOLS.md) — the four vendored Vercel skills, pinned sources, attribution, licensing, and update guidance.
+![Разбор плана: оценка, районы, вклад мер и рекомендации](docs/images/review.png)
 
-The project needs a dependable foundation for building and checking its core flow. A connection page verifies the complete path from the browser through the API to PostgreSQL, with shared build and test tooling at the repository root.
+Публичное демо не развёрнуто. Локальное приложение: [localhost:5173](http://localhost:5173). [История разработки](BUILD_STORY.md), [исходный датасет](docs/data/astana-dataset.md), [план реализации](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [внешние инструменты](docs/EXTERNAL_TOOLS.md).
 
-![The workspace with a successful browser-to-database connection](docs/images/workspace.png)
+## Запуск за одну команду
 
-## Quick start with Docker
-
-Requires Docker with Compose v2. Run from the repository root:
+Нужен Docker с Compose v2. В корне репозитория:
 
 ```sh
 cp .env.example .env
 docker compose up --build --wait --wait-timeout 180
 ```
 
-Open [localhost:5173](http://localhost:5173) and select **Check connection**. The page shows progress, confirms a healthy stack, and lets you retry after a failure. The API listens on [localhost:3000](http://localhost:3000).
+Откройте [localhost:5173](http://localhost:5173). API: [localhost:3000/api/scenario](http://localhost:3000/api/scenario). При старте API применяет миграции и один раз перебирает пространство планов. PostgreSQL хранит реестр команд; данные сценария версионированы в коде.
 
-The example password is for local development only. Set your own value in `.env` before starting the database. PostgreSQL initializes credentials only on an empty data volume; changing `.env` later does not change an existing database password.
-
-The Compose project is named `testing-workspace`. It binds published ports to localhost, waits for healthy dependencies, and stores PostgreSQL data in a named volume. These containers run development servers with source watching, not production deployment servers.
+**Ключ AI не нужен для основного сценария.** С пустым `ANTHROPIC_API_KEY` работает детерминированный офлайн-аналитик. При ошибке провайдера, таймауте или некорректном ответе приложение также возвращает офлайн-разбор и явно показывает его источник.
 
 ```sh
-docker compose logs -f
-docker compose down
-```
-
-`down` preserves the database volume. API/web source changes and web public assets are mounted into their containers. Rebuild and recreate containers after dependency, environment, or configuration changes.
-
-## Local Node development
-
-Use Node.js 24.11 or newer in the 24.x line and npm 10. With nvm and Docker installed:
-
-```sh
-nvm install
-nvm use
-npm install --global npm@10
-npm ci
-cp .env.example .env
-npm run db:up
-npm run dev
-```
-
-If you already started the whole Compose stack, run `docker compose stop api web` before `npm run dev` to release the web/API ports. To use an existing PostgreSQL server, configure `.env` and omit `npm run db:up`.
-
-| Variable            | Purpose                              | Default example          |
-| ------------------- | ------------------------------------ | ------------------------ |
-| `POSTGRES_USER`     | Database user                        | `app`                    |
-| `POSTGRES_PASSWORD` | Local database password              | `local-development-only` |
-| `POSTGRES_DB`       | Database name                        | `app`                    |
-| `POSTGRES_HOST`     | Database host for the local API      | `localhost`              |
-| `POSTGRES_PORT`     | Database port published on localhost | `5432`                   |
-| `API_PORT`          | API port published on localhost      | `3000`                   |
-| `WEB_PORT`          | Vite port published on localhost     | `5173`                   |
-| `API_PROXY_TARGET`  | Server-side Vite proxy destination   | `http://localhost:3000`  |
-
-If a port is occupied, change it in `.env`. For local Node development, update `API_PROXY_TARGET` when changing `API_PORT`. Inside Compose, API/database service names and internal ports are configured automatically. Never prefix database credentials with `VITE_`; that prefix exposes values to browser code.
-
-## Commands and validation
-
-```sh
-npm run check        # Lint, formatting, typecheck, coverage tests, builds
-npm run lint         # Check application, test, script, and config code
-npm run lint:fix     # Apply safe ESLint fixes; report remaining issues
-npm run format:check # Check maintained project file formatting
-npm test             # Isolated unit tests with enforced coverage
-npm run test:watch   # Unit tests while editing
-npm run build        # Build both workspaces
-npm run format       # Format maintained project files
-```
-
-ESLint uses the recommended JavaScript, TypeScript, and React Hooks rules. Prettier owns formatting, with `eslint-config-prettier` disabling conflicting lint rules. Lint warnings fail checks. Run `npm run lint:fix` and `npm run format` to apply fixes, then `npm run check` before opening a pull request.
-
-Generated dependencies, builds, and coverage output are ignored. Both tools leave `.agents/` and `.claude/` untouched to preserve vendored skill contents; Prettier also preserves `AGENTS.md` and `CLAUDE.md`. Validate skill synchronization with `diff -qr .agents/skills .claude/skills`.
-
-The unit suite has 52 tests and enforces **100% lines, branches, functions, and statements per application file**. Tests cover configuration boundaries, database health/error handling, malformed responses, timeouts, and UI progress/retry behavior. Database queries and browser network requests are mocked at their external boundaries; unit tests need no running services.
-
-Framework bootstrap files are excluded with comments in `vitest.config.mts`. Verify runtime wiring against a running full stack:
-
-```sh
-npm run smoke
-curl -i http://localhost:3000/api/health
-```
-
-For nondefault ports, pass the web URL followed by the API URL:
-
-```sh
-npm run smoke -- http://localhost:5174 http://localhost:3001
-```
-
-The smoke command checks direct API health, the Vite proxy, page serving, and the favicon. It can also run without host Node when the Compose stack is up:
-
-```sh
+npm run smoke           # Проверка работающего стека; нужен локальный Node
+# Та же проверка без локального Node:
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
+docker compose logs -f
+docker compose down     # Останавливает сервисы, сохраняет данные PostgreSQL
 ```
 
-CI runs linting, formatting, typechecking, unit coverage, builds, and a real Compose smoke/migration check on pull requests and pushes to `main`.
+Compose использует проект `testing-workspace`, привязывает порты к localhost и сохраняет базу в именованном томе. Это окружение разработки с hot reload. После изменения зависимостей или переменных окружения пересоберите контейнеры. Пароль в примере предназначен только для локальной разработки; смена `.env` не меняет пароль уже созданной базы.
 
-Additional useful commands:
+## Демо за две минуты
 
-```sh
-npm run dev:api
-npm run dev:web
-npm run db:down
-npm start -w @app/api
-npm run preview -w @app/web
-```
+1. В конструкторе посмотрите Нуру: школы **38**, медицина **35**, оба значения критические.
+2. Загрузите **план-ловушку** и разберите его: **52.45**, ниже бездействия **52.56**, хотя потрачено **86**. Безопасные переходы в Алматы понижают T1 до **38.25** и вызывают новый штраф.
+3. Загрузите **сильный пример**: школа и поликлиника в Нуре, освещение и камеры в Нуре, цифровая платформа по городу, чистое топливо в Сарыарке. Бюджет **95**, Score **56.54**, место **566 из 694 395**.
+4. Примените предложенную замену **M5 в Сарыарке → M3 в Нуре**: Score **57.21**. Можно раскрыть глобальный оптимум **57.24**.
+5. Прочитайте сильные стороны, риски, последствия и рекомендации. Журнал инструментов показывает вызовы движка, их входы и результаты.
+6. Отправьте план с названием команды в реестр. В таблице остаётся лучший результат каждой команды; Score и ранг сервер рассчитывает заново.
 
-The last two commands require `npm run build`. Vite preview uses port 4173 and still needs a running API. `db:down` stops PostgreSQL without deleting its data.
+## Как считается результат
 
-## Architecture
+Данные **синтетические**, границы на карте **схематические**. Симулятор объясняет заданную модель, а не прогнозирует реальную городскую экономику.
 
 ```text
-Browser / React
-   │ GET /api/health (same origin)
-   ▼
-Vite /api proxy
-   ▼
-NestJS HealthController → HealthService
-   ▼
-TypeORM → PostgreSQL SELECT 1
+Реализованный эффект = полный эффект × (8 − лаг) / 8
+I'[район, показатель] = clip(исходное значение + эффекты + синергии, 0, 100)
+D[район] = Σ вес[показатель] × I'[район, показатель]
+D_avg = Σ доля_населения[район] × D[район]
+Score = 0.7 × D_avg + 0.3 × min(D) − N_crit
+N_crit = число значений строго ниже 40
 ```
 
-- `apps/web/src/App.tsx`: connection page with accessible idle, loading, success, and error states.
-- `apps/web/src/api/health.ts`: health request, response validation, and a five-second timeout.
-- `apps/api/src/health`: HTTP controller and database health service.
-- `apps/api/src/config`: root `.env` loading and required-value/port validation.
-- `apps/api/src/database`: TypeORM options and migration CLI data source.
-- `apps/*/tests`: behavior tests organized alongside each application's source structure.
-- Root: npm workspaces, strict TypeScript, Vitest/V8 coverage, ESLint, Prettier, Docker Compose, and GitHub Actions.
+Горизонт — восемь кварталов. Синергии фиксированы и лагом не масштабируются. Неизрасходованный бюджет не даёт бонуса. Внутри движка сохраняется полная точность; HTTP-ответы и интерфейс округляют значения для отображения. Ранги определяются по неокруглённым значениям, равные результаты делят место.
 
-A healthy database returns `200` with `{"status":"ok","database":"up"}`. A failed query returns `503` with `{"status":"error","database":"down"}` without exposing connection details. Responses use `Cache-Control: no-store`. Missing required settings and invalid API/database/web ports fail with clear startup errors; an unreachable database prevents API startup after Nest's connection retries.
+Правила: ровно пять разных мер, стоимость не больше 100, максимум две меры одного направления, район обязателен для районных мер и запрещён для городских. M1 и M3 несовместимы в любом районе; M4/M7 и M5/M13 несовместимы в одном районе. Все пять направлений доступны, но обязательного охвата всех пяти нет: это ограничение отсутствует в датасете.
 
-The stack uses React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, and TypeScript 5.9. The lockfile records exact dependency versions. No domain entities, authentication, or product-specific features are implemented yet.
+Изменение Score рассчитывается до округления: у примера это **3.98539**, отображается **+3.99**. Разность уже округлённых 56.54 и 52.56 равна 3.98; поэтому клиент получает отдельное рассчитанное движком поле `scoreDelta`.
 
-## Database migrations
+**Вклад каждого хода — точное значение Шепли** по всем подмножествам плана. Сумма вкладов равна изменению Score относительно бездействия. Оценка хода учитывает лучшую допустимую одиночную замену:
 
-Automatic schema synchronization and automatic migration execution are disabled. Both the app and migration CLI load the root `.env`. Define entities under `apps/api/src` as `*.entity.ts`, then generate and inspect migrations:
+| Оценка                    | Правило                                                                            |
+| ------------------------- | ---------------------------------------------------------------------------------- |
+| Грубая ошибка (`blunder`) | Вклад отрицательный                                                                |
+| Ошибка (`mistake`)        | Лучшая замена даёт ≥ 1.0                                                           |
+| Неточность (`inaccuracy`) | Лучшая замена даёт ≥ 0.3                                                           |
+| Хороший (`good`)          | Лучшая замена даёт > 0.05                                                          |
+| Лучший (`best`)           | Улучшение заменой не превышает 0.05                                                |
+| Ключевой (`brilliant`)    | `best`, а удаление меры возвращает критическое значение или мера включает синергию |
 
-```sh
-npm run migration:generate -- src/database/migrations/InitialSchema
-npm run migration:run
-npm run migration:revert
+КПД = `(Score − базовый Score) / (оптимум − базовый Score) × 100%`; у вредного плана может быть отрицательным. Процентиль отражает положение в полном пространстве допустимых планов. Гистограмма построена по этим же результатам с шагом 0.25.
+
+## Эталонные проверки
+
+`npm test` проверяет числа из исходного сценария без сетевых запросов или базы:
+
+| Проверка                      | Результат                                            |
+| ----------------------------- | ---------------------------------------------------- |
+| Бездействие                   | 52.56, два критических значения в Нуре               |
+| Сильный пример                | 56.54; бюджет 95; критических значений 0             |
+| Число допустимых планов       | 694 395                                              |
+| Оптимум                       | 57.24; M2, M3@Нура, M8@Нура, M9@Нура, M14; бюджет 98 |
+| Худший допустимый план        | 52.04                                                |
+| Планов хуже бездействия       | 20 003                                               |
+| Место примера                 | 566; процентиль 99.9; КПД около 85%                  |
+| Вклады примера                | 1.45, 1.40, 0.49, 0.47, 0.17; точная сумма 3.98539   |
+| Лучшая замена в примере       | M5@Сарыарка → M3@Нура; 57.21, прирост 0.66           |
+| План-ловушка                  | 52.45; бюджет 86; вклад M11@Алматы −0.87             |
+| Лучший охват пяти направлений | 56.34                                                |
+
+## Архитектура
+
+```text
+React / Vite → same-origin /api proxy → NestJS
+                                          ├─ SimulationService → чистый TypeScript-движок
+                                          │    ├─ версия astana-v1, правила, Score
+                                          │    └─ полный перебор, Шепли, замены, оценки ходов
+                                          ├─ AnalysisService → инструменты движка → Anthropic
+                                          │    └─ офлайн-аналитик при отсутствии ключа/ошибке
+                                          └─ SubmissionsService → TypeORM → PostgreSQL
 ```
 
-The generation path is relative to `apps/api`. A running database and a changed entity schema are required for generation. The scaffold starts with no migrations; `migration:run` reports no pending migrations and initializes TypeORM's migration bookkeeping.
+Стек: React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, TypeScript 5.9, Vitest, ESLint и Prettier. Единственная новая продуктовая зависимость — официальный Anthropic SDK; визуализации используют SVG и CSS.
 
-For Compose:
+- `apps/api/src/simulation/engine`: данные, валидация, формула, полный перебор, точные вклады и лучшие замены. Без Nest и базы.
+- `apps/api/src/simulation`: HTTP-парсер и сервис, формирующий Review. Невалидный план не получает Score.
+- `apps/api/src/analysis`: адаптер LLM, ограниченный цикл инструментов, проверка JSON и офлайн-объяснения. SDK изолирован в `llm-client.ts`.
+- `apps/api/src/submissions`: серверный пересчёт результатов и сохранение планов.
+- `apps/web/src/features`: конструктор, разбор и реестр. Браузер не реализует формулу Score.
+- `apps/*/tests`: тесты поведения, структура которых повторяет исходники.
 
-```sh
-docker compose exec -T api npm run migration:run
-```
+Агент использует `evaluate_plan`, `explain_contributions`, `get_rank`, `find_best_swaps`, `evaluate_alternative`. Лимит — шесть шагов, общий срок по умолчанию 25 секунд. Числа и допустимые альтернативы берутся из инструментов. Финальный ответ проходит проверку структуры. Дополнительная проверка отклоняет числовые литералы, отсутствующие в результатах инструментов (с учётом округления). Она не проверяет, относится ли число к верному району или утверждению; это не полная семантическая проверка. Офлайн-разбор непосредственно форматирует результаты движка.
 
-Generate migration files locally so they stay in the repository. Review generated SQL before applying it to any database with valuable data.
+Реестр открытый, без аутентификации: название команды — метка, а не защищённая учётная запись. Имена сравниваются без учёта регистра. Сохраняется история отправок, в таблицу попадает лучший результат каждой команды; при равном Score выбирается более ранняя отправка.
+
+## Соответствие кейсу
+
+| Требование / критерий                        | Реализация                                        | Проверка                                                                 |
+| -------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
+| Единый бюджет и данные; критерий 1           | `simulation/engine/scenario.ts`, `/api/scenario`  | `simulation/engine/scoring.test.ts`, `simulation/simulation.test.ts`     |
+| Решения по пяти направлениям                 | Каталог 14 мер, фильтры конструктора              | `simulation/engine/scoring.test.ts`, `features/Builder.test.tsx`         |
+| Контроль бюджета; критерий 2                 | `validation.ts`, серверный запрет разбора         | `simulation/engine/scoring.test.ts`, `simulation/simulation.test.ts`     |
+| Меры изменяют показатели; критерий 3         | `scoring.ts`, лаги и синергии                     | `simulation/engine/scoring.test.ts`                                      |
+| Расчёт Astana Quality of Life Score          | `scoring.ts`, `landscape.ts`                      | `simulation/engine/review.test.ts`, `scripts/smoke.mjs`                  |
+| AI-анализ и понятные компромиссы; критерий 4 | `analysis/analyst-agent.ts`, `offline-analyst.ts` | `analysis/analyst-agent.test.ts`, `analysis/offline-analyst.test.ts`     |
+| Сильные стороны, риски, последствия          | Структурированный отчёт аналитика                 | `analysis/offline-analyst.test.ts`, `features/Review.test.tsx`           |
+| Изменение плана меняет Score; критерий 5     | `swaps.ts`, повторный разбор после замены         | `simulation/engine/review.test.ts`, `scripts/smoke.mjs`                  |
+| Сравнение команд                             | PostgreSQL, `submissions.service.ts`              | `submissions/submission.test.ts`                                         |
+| Визуализация изменений                       | Карта, таблица показателей, гистограмма           | `components/Map.test.tsx`, `features/Review.test.tsx`; браузерный прогон |
+
+Пути backend-тестов относительно `apps/api/tests`, frontend-тестов — `apps/web/tests`. Точные команды запуска приведены ниже.
 
 ## Roadmap
 
-- Implement the hackathon's first product flow and its data model.
-- Add authentication when that flow requires it.
-- Add production deployment configuration.
+- Неожиданные события города и перераспределение бюджета.
+- Мультиагентный совет при акиме и NPC-соперники.
+- Турнир по кварталам и сравнение последовательностей решений.
+- Проверка каждого численного утверждения LLM по результатам инструментов.
+- Авторизация команд, лимиты запросов и конфигурация публичного развёртывания.
 
-No public demo is deployed yet. The screenshot shows the local development workspace.
+Подробные команды локальной разработки, переменные окружения, HTTP API и миграции — в [руководстве разработчика](docs/DEVELOPMENT.md).

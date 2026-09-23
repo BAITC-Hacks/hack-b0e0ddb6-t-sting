@@ -1,0 +1,116 @@
+@media (min-width: 1500px) {
+  .app-shell {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
+@media (max-width: 1200px) {
+  .app-shell {
+    padding: 32px;
+  }
+  .workspace-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(290px, 1fr);
+    gap: 36px;
+  }
+  .header-controls {
+    gap: 24px;
+  }
+  .masthead nav {
+    gap: 16px;
+  }
+  .brand .muted {
+    font-size: 11px;
+  }
+  .map-heading {
+    gap: 10px;
+  }
+  .metric-tabs {
+    gap: 11px;
+  }
+}
+@media (max-width: 800px) {
+  .app-shell {
+    padding: 24px;
+  }
+  .masthead {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+  .map-section {
+    gap: 14px;
+  }
+  .map-heading {
+    flex-wrap: wrap;
+  }
+  .map-heading h2 {
+    font-size: 12px;
+  }
+  .metric-tabs {
+    font-size: 11px;
+  }
+  .footer {
+    font-size: 10px;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .modal-backdrop {
+    padding: 16px;
+  }
+  .modal {
+    padding: 24px;
+    max-height: calc(100dvh - 32px);
+  }
+  .registry h1 {
+    font-size: 15px;
+  }
+}
+@media (max-width: 420px) {
+  .app-shell {
+    padding: 20px 16px;
+  }
+  .masthead nav {
+    gap: 14px;
+    font-size: 12px;
+  }
+  .map-legend {
+    gap: 12px;
+    font-size: 10px;
+  }
+  .indicator-key {
+    grid-template-columns: 1fr;
+  }
+  .brand .muted {
+    font-size: 10px;
+  }
+  .metric-tabs {
+    gap: 14px;
+  }
+  .modal {
+    padding: 20px;
+  }
+  .dialog-actions {
+    flex-direction: column;
+  }
+  .map-caption {
+    font-size: 8px;
+  }
+  .map-value {
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
