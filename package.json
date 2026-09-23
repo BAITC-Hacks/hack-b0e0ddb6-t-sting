@@ -27,10 +27,14 @@
     "dev:web": "npm run dev -w @app/web",
     "smoke": "node scripts/smoke.mjs",
     "db:up": "docker compose up -d --wait db",
-    "db:down": "docker compose stop db"
+    "db:down": "docker compose stop db",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",

@@ -4,6 +4,9 @@ node_modules
 dist
 build
 coverage
+playwright-report
+test-results
+blob-report
 .vite
 
 # Preserve vendored skills and agent instructions verbatim

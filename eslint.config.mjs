@@ -12,6 +12,9 @@ export default defineConfig([
     '**/build/**',
     '**/coverage/**',
     '**/.vite/**',
+    '**/playwright-report/**',
+    '**/test-results/**',
+    '**/blob-report/**',
     // Preserve upstream skill sources and examples in both mirrored directories.
     '.agents/**',
     '.claude/**',
@@ -29,6 +32,8 @@ export default defineConfig([
       'apps/api/**/*.ts',
       'scripts/**/*.mjs',
       '*.{mjs,mts}',
+      'playwright.config.ts',
+      'e2e/**/*.ts',
       'apps/web/vite.config.ts',
     ],
     languageOptions: { globals: globals.node },

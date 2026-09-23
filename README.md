@@ -31,7 +31,17 @@ npm ci
 npm run check
 ```
 
-This runs linting, formatting checks, type checking, unit tests with 100% line and branch coverage requirements, and builds. CI also checks the running Docker stack.
+This runs linting, formatting checks, type checking, unit tests with 100% line and branch coverage requirements, and builds. CI also runs Playwright browser tests and checks the running Docker stack.
+
+For browser tests, configure `.env` as described in the [development guide](docs/DEVELOPMENT.md#local-node-development), then run:
+
+```sh
+npx playwright install chromium
+npm run db:up
+npm run test:e2e
+```
+
+Playwright starts dedicated API/web servers and requires free ports 3100 and 5174. See [browser testing](docs/DEVELOPMENT.md#browser-end-to-end-tests) for Linux dependencies, test behavior, reports, and service cleanup.
 
 ## Stack and structure
 
