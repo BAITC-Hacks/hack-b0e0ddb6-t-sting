@@ -42,27 +42,6 @@ Compose uses the project name `testing-workspace`, binds ports to localhost, and
 
 For DigitalOcean App Platform, run migrations in a separate pre-deploy Job and set `POSTGRES_CA_CERT` for a verified TLS connection to Managed PostgreSQL. [Setup and commands](docs/DEVELOPMENT.md#digitalocean-app-platform).
 
-## Two-minute demo
-
-The **"how it works"** tutorial appears on the first visit. Complete its seven steps or select **"skip"** to open the plan builder.
-
-1. In the builder, inspect Nura: schools **38**, healthcare **35**, both critically low.
-2. Load the **trap plan** and review it: **52.45**, below the do-nothing baseline of **52.56**, despite spending **86**. Safe crossings in Almaty district lower T1 to **38.25** and trigger a new penalty.
-3. Load the **strong example**: a school and clinic in Nura, lighting and cameras in Nura, a citywide digital platform, and clean fuel in Saryarka. Budget **95**, Score **56.54**, rank **566 out of 694,395**.
-4. Apply the suggested replacement **M5 in Saryarka → M3 in Nura**: Score **57.21**. You can also reveal the global optimum of **57.24**.
-5. Read the strengths, risks, consequences, and recommendations. The tool log shows engine calls, their inputs, and their results.
-6. Submit the plan to the registry under your team's name. The table keeps each team's best result; the server recalculates the Score and rank.
-
-## "How it works" tutorial
-
-![Onboarding: from a plan to calculations and explanations](docs/images/onboarding.png)
-
-Seven steps explain the budget and measure selection, districts and critical shortfalls, plan rules, implementation lag, the final score, positive and negative examples, and the results screen. You can adjust the lag from 0 to 4: the eight-quarter timeline and the school's illustrative effect update accordingly. The examples let you switch between a school in Nura and crossings in Almaty, while the final step expands definitions of percentile, efficiency, contribution, measure rating, and synergy.
-
-The "back / next" buttons and navigation dots switch between steps. "Skip", ×, Escape, and "build a plan →" close the tutorial. The **[?] how it works** link in the header reopens it at the first step while preserving the current plan. Dismissal is remembered in this browser (`localStorage`); if storage is unavailable, the app keeps working, but the tutorial appears again after a reload. The dialog supports keyboard navigation, returns focus to its trigger button, and adapts to mobile screens.
-
-The tutorial's numbers are examples from the `astana-v1` scenario, not a preliminary calculation of the selected plan. The strong example's gain is shown as **+3.99**, matching the engine and its rounding. The tutorial's lag control does not change the catalog or the plan.
-
 ## Mayor's council
 
 From a completed review, select **"bring to council"**, then **"start session"**. Seven fictional participants discuss the plan, propose valid replacements, and vote on the chair's verified recommendation. These are educational characters identified only by their roles; the data is synthetic.
