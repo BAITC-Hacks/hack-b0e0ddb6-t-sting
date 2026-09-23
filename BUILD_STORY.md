@@ -44,3 +44,21 @@ In parallel, we're assembling the agent orchestration and the templates that wil
 The agent work also includes simulating several akims as NPC players. The aim is to let the human player inspect their decisions within the main flow and use them as a point of comparison.
 
 Outreach has moved from finding contacts to making calls: we've called seven people and are looking for pilot participants who can evaluate the solution during the build window. Their feedback is the next reality check; those evaluations have not happened yet.
+
+## September 23 — Outreach for adoption
+
+### English
+
+On September 23, alongside development, we wrote to four recipients.
+
+We asked Asad Bokhari at NU GSPP, whose research covers AI, e-government, and smart cities, to tell us where our model diverges from practice. We invited Didar Yedilkhan, Director of AITU's Smart City Research Center (`d.yedilkhan@astanait.edu.kz`), to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana. We also contacted Zhanar Ismailova and GSPP Executive Education (`zhanar.ismailova@nu.edu.kz`, `execed.gspp@nu.edu.kz`) about using the simulator as a training exercise for serving public officials who allocate budgets as part of their work.
+
+We offered the simulator free of charge, with no obligations. No replies had been received by the time of the final presentation.
+
+### Русский
+
+23 сентября, параллельно с разработкой, написали четверым.
+
+Асаду Бохари из NU GSPP — он исследует ИИ, электронное правительство и умные города; попросили сказать, где наша модель расходится с практикой. Дидару Едилхану, директору НИЦ Smart City в AITU (`d.yedilkhan@astanait.edu.kz`), предложили посмотреть рабочую версию и забрать её Центру: они ведут проекты по моделям SmartCity и городским данным в Астане. Жанар Исмаиловой и в Executive Education GSPP (`zhanar.ismailova@nu.edu.kz`, `execed.gspp@nu.edu.kz`) — использовать симулятор как упражнение в программах для действующих госслужащих, которые распределяют бюджет по работе.
+
+Отдаём бесплатно, без обязательств. Ответов на момент защиты пока нет.
