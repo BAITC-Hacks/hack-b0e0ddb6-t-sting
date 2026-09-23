@@ -1,4 +1,4 @@
-# QOL-SIM — Game Review
+# QOL-SIM
 
 An AI-powered mayor (akim) simulator for teams, urban analysts, and anyone who wants to explore the consequences of city policy decisions.
 
