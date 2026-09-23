@@ -2,7 +2,7 @@
 
 ## Уточнение команды — 23 сентября, перед сдачей
 
-Это журнал разных этапов. Ниже сохранены ранние записи, включая тогдашние планы и оценки времени. Они не описывают одновременно финальное состояние. Итоговый рассказ и ограничения собраны в [README](README.md).
+Это журнал разных этапов. Ниже сохранены ранние записи, включая тогдашние планы и оценки времени. Они не описывают одновременно финальное состояние. Итоговый рассказ и ограничения собраны в [README](../README.md).
 
 По воспоминаниям команды, начало ушло на выбор между финтехом/AML и городским симулятором. Первые записи упоминали Altus AI; это раннее обсуждение, не итоговый выбор. Оценка Доса — около полутора часов на исследование и замысел, с пересечением этапов. Заголовки «первые 30 минут», «90 минут» и «час 3» не считаем точным хронометражем. Раннюю запись о готовом flow также не используем как доказательство его готовности в тот час.
 
@@ -35,7 +35,7 @@ The scaffold also established how we check our work: unit tests with enforced co
 
 We then tightened the everyday workflow. [PR #5](https://github.com/BAITC-Hacks/hack-b0e0ddb6-t-sting/pull/5) expanded the ignore rules for dependencies, local secrets, generated files, editor metadata, and operating-system artifacts, while keeping environment examples and lockfiles trackable. [PR #8](https://github.com/BAITC-Hacks/hack-b0e0ddb6-t-sting/pull/8) disabled Claude's automatic commit and pull-request attribution text.
 
-To support the product experience work ahead, [PR #9](https://github.com/BAITC-Hacks/hack-b0e0ddb6-t-sting/pull/9) added four Vercel skills covering component composition, React performance, view transitions, and web design guidelines. Their sources and attribution are recorded in [External tools and agent skills](docs/EXTERNAL_TOOLS.md), and the repository now requires identical copies for Codex and Claude. These are development references; importing them does not add those interactions to the app.
+To support the product experience work ahead, [PR #9](https://github.com/BAITC-Hacks/hack-b0e0ddb6-t-sting/pull/9) added four Vercel skills covering component composition, React performance, view transitions, and web design guidelines. Their sources and attribution are recorded in [External tools and agent skills](EXTERNAL_TOOLS.md), and the repository now requires identical copies for Codex and Claude. These are development references; importing them does not add those interactions to the app.
 
 At this snapshot of `main` (`0a007ae`), there is still no recorded decision between the fintech and Altus AI Innovations cases. The application remains a connection-check scaffold: product-specific features, authentication, and a public deployment are still ahead of us. The next milestone is to turn the chosen direction into the first complete product flow.
 
