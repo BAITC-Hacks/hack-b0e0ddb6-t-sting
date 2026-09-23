@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "apps/*/src",
+    "apps/*/tests",
+    "apps/*/vite.config.ts",
+    "vitest.config.mts"
+  ]
+}
