@@ -19,9 +19,10 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: [
     {
-      command: 'npm run build -w @app/api && npm start -w @app/api',
+      command:
+        'npm run build -w @app/api && npm run migration:run && npm start -w @app/api',
       url: `${apiURL}/api/health`,
-      env: { API_PORT: '3100' },
+      env: { API_PORT: '3100', ANTHROPIC_API_KEY: '' },
       reuseExistingServer: false,
       timeout: 120_000,
     },

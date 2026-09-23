@@ -1,0 +1,262 @@
+.score-summary {
+  display: flex;
+  align-items: flex-end;
+  gap: 56px;
+  margin-bottom: 44px;
+}
+.score-summary h1 {
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.score-number {
+  font-size: 72px;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.score-summary p {
+  font-size: 12px;
+  margin-top: 8px;
+}
+.score-metrics {
+  display: flex;
+  gap: 32px;
+  padding-bottom: 7px;
+}
+.score-metrics dt {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+.score-metrics dd {
+  margin: 0;
+  white-space: nowrap;
+}
+.score-summary > .outline {
+  margin-left: auto;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.review-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.moves ul {
+  padding: 0;
+  list-style: none;
+  margin-top: 12px;
+}
+.moves li {
+  min-height: 30px;
+}
+.move-line {
+  display: grid;
+  grid-template-columns: minmax(112px, 1.2fr) minmax(16px, 1fr) 42px 112px;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+}
+.move-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.move-line > .positive,
+.move-line > .danger {
+  text-align: right;
+}
+.additional-swaps {
+  margin-top: 10px;
+  font-size: 11px;
+}
+.grade {
+  white-space: nowrap;
+}
+.grade.brilliant,
+.grade.best,
+.grade.good {
+  color: var(--positive);
+}
+.grade.inaccuracy {
+  color: #e3b85a;
+}
+.grade.mistake,
+.grade.blunder {
+  color: var(--danger);
+}
+.swap {
+  margin-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1e2023;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+}
+.swap > div {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.swap .outline {
+  padding: 6px 10px;
+  min-height: 32px;
+  font-size: 11px;
+}
+.optimum-button {
+  text-align: left;
+  font-size: 12px;
+}
+.review-context {
+  font-size: 11px;
+}
+.review-context p + p {
+  margin-top: 3px;
+}
+.histogram {
+  margin-top: 44px;
+}
+.histogram svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.histogram text {
+  font-size: 10px;
+}
+.histogram .baseline {
+  fill: #8a8d90;
+  color: #8a8d90;
+  stroke: #8a8d90;
+}
+.histogram .current {
+  fill: #fff;
+  color: #fff;
+  stroke: #fff;
+}
+.histogram .optimum {
+  fill: var(--positive);
+  color: var(--positive);
+  stroke: var(--positive);
+}
+.histogram text {
+  stroke: none;
+}
+.histogram line {
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.histogram-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 10px;
+}
+.swap-preview {
+  padding: 18px 0;
+}
+.swap-preview p + p {
+  margin-top: 4px;
+}
+.swap-preview p:nth-child(3) {
+  margin-top: 20px;
+}
+.optimum-score {
+  font-size: 48px;
+  margin: 24px 0;
+}
+.optimum-list {
+  padding-left: 25px;
+  margin-bottom: 24px;
+}
+.optimum-list li {
+  padding-left: 5px;
+  margin-bottom: 14px;
+}
+.optimum-list small {
+  display: block;
+  color: var(--muted);
+  margin-top: 3px;
+}
+@media (max-width: 1200px) {
+  .score-summary {
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .score-metrics {
+    gap: 24px;
+  }
+  .score-summary > .outline {
+    margin-left: 0;
+  }
+  .score-number {
+    font-size: 64px;
+  }
+  .move-line {
+    grid-template-columns: minmax(90px, 1fr) minmax(12px, 1fr) 38px 92px;
+    gap: 7px;
+    font-size: 10px;
+  }
+  .swap {
+    align-items: flex-start;
+  }
+  .swap > div {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+@media (max-width: 800px) {
+  .score-summary {
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .score-summary > div {
+    min-width: 160px;
+  }
+  .score-metrics {
+    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 30px;
+    padding-top: 8px;
+  }
+  .score-summary > .outline {
+    width: 100%;
+  }
+  .review-sidebar {
+    border-top: 1px solid #2e3135;
+    padding-top: 24px;
+  }
+  .swap > div {
+    flex-direction: row;
+  }
+  .analysis-sections {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .analysis-summary {
+    font-size: 13px;
+  }
+  .histogram-legend {
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+  .score-number {
+    font-size: 58px;
+  }
+  .score-summary p {
+    font-size: 11px;
+  }
+}
+.contribution-bar {
+  flex: 1;
+  height: 2px;
+  background: #1e2023;
+  min-width: 16px;
+}
+.contribution-bar > span {
+  display: block;
+  height: 2px;
+  background: #d9d9d6;
+}
