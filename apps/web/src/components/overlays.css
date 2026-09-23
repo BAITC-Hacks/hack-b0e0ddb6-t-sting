@@ -1,0 +1,84 @@
+.modal-backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  background: #060708dd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  backdrop-filter: blur(3px);
+}
+.modal {
+  width: 560px;
+  max-width: 100%;
+  max-height: calc(100dvh - 64px);
+  overflow: auto;
+  background: #101214;
+  border: 1px solid #3a3d41;
+  padding: 32px;
+  box-shadow: 0 24px 90px #0009;
+}
+.modal > .section-heading {
+  margin-bottom: 22px;
+}
+.modal h2 {
+  color: #fff;
+  font-size: 15px;
+}
+.modal > .primary,
+.modal form > .primary {
+  width: 100%;
+  margin-top: 28px;
+}
+.modal .section-heading > button {
+  padding: 0 4px;
+}
+.dialog-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 28px;
+}
+.dialog-actions > * {
+  flex: 1;
+}
+.field-label {
+  display: block;
+  margin-top: 26px;
+  margin-bottom: 8px;
+}
+.modal input[type='text'],
+.modal input:not([type]) {
+  width: 100%;
+}
+.field-hint {
+  display: block;
+  font-size: 11px;
+  margin-top: 6px;
+}
+.modal [role='alert'] {
+  margin-top: 16px;
+}
+.registry {
+  min-height: 62vh;
+}
+.registry h1 {
+  font-size: 18px;
+}
+.registry > .section-heading + p {
+  margin-top: 20px;
+}
+.registry table {
+  margin-top: 36px;
+}
+.registry table td,
+.registry table th {
+  padding: 15px 24px 15px 0;
+  border-bottom: 1px solid #1e2023;
+}
+.registry-empty {
+  padding: 80px 0;
+}
+.registry-empty button {
+  margin-top: 24px;
+}

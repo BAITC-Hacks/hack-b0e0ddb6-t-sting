@@ -1,0 +1,141 @@
+.tabs {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.tabs button {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tabs button[aria-pressed='true'] {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.metric-tabs {
+  font-size: 12px;
+}
+.map-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.map-heading {
+  align-items: center;
+  flex-wrap: wrap;
+}
+.district-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.map-district {
+  cursor: pointer;
+}
+.map-district polygon {
+  fill: #141618;
+  stroke: #3a3d41;
+  stroke-width: 1;
+  transition: fill 0.15s;
+}
+.map-district.critical polygon {
+  fill: #3a1a18;
+  stroke: var(--danger);
+}
+.map-district.improved polygon {
+  fill: #14201b;
+  stroke: var(--positive);
+}
+.map-district:hover polygon {
+  fill: #24272a;
+}
+.map-district polygon.selected {
+  stroke: #fff;
+  stroke-width: 2;
+}
+.map-name {
+  fill: #fff;
+  font-size: 12px;
+}
+.map-population {
+  fill: var(--muted);
+  font-size: 10.5px;
+}
+.map-value {
+  fill: #d9d9d6;
+  font-size: 10px;
+}
+.critical .map-value {
+  fill: var(--danger);
+}
+.improved .map-value {
+  fill: var(--positive);
+}
+.map-measures {
+  fill: #d9d9d6;
+  font-size: 10px;
+}
+.map-caption {
+  fill: var(--muted);
+  font-size: 9.5px;
+}
+.city-outline {
+  fill: none;
+  stroke: #d9d9d6;
+  stroke-dasharray: 3 4;
+  transform: translate(-10px, -8px) scale(1.035);
+  pointer-events: none;
+}
+.map-legend {
+  display: flex;
+  gap: 24px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.map-legend b {
+  font-weight: 400;
+}
+.table-scroll {
+  width: 100%;
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  white-space: nowrap;
+}
+th,
+td {
+  text-align: left;
+  padding: 7px 14px 7px 0;
+  font-weight: 400;
+}
+thead {
+  color: var(--muted);
+}
+.district-summary td {
+  vertical-align: top;
+}
+.district-summary button[aria-pressed='true'] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.district-detail {
+  border-left: 1px solid var(--border);
+  padding: 6px 16px;
+}
+.district-detail p {
+  margin-top: 5px;
+}
+.indicator-details {
+  margin-top: 12px;
+  font-size: 12px;
+}
+.indicator-key {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 20px;
+  margin-top: 16px;
+}

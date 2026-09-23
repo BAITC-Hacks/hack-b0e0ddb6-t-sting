@@ -1,0 +1,297 @@
+.council-page {
+  color: #d9d9d6;
+}
+.council-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+.council-heading h1 {
+  font-size: 30px;
+  color: #fff;
+  margin: 4px 0 10px;
+  letter-spacing: -0.04em;
+}
+.council-heading p {
+  color: #8a8d90;
+  max-width: 700px;
+}
+.council-heading .outline {
+  white-space: nowrap;
+}
+.council-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid #2e3135;
+  border-bottom: 1px solid #2e3135;
+  margin-bottom: 28px;
+}
+.council-progress button {
+  padding: 12px 15px;
+  border-right: 1px solid #2e3135;
+  color: #666a6e;
+  font-size: 11px;
+}
+.council-progress .reached {
+  color: #d9d9d6;
+}
+.council-progress .reached:last-child {
+  color: #6cc3a0;
+}
+.council-status,
+.council-error {
+  padding: 18px 0;
+  margin-bottom: 16px;
+}
+.council-error {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #f07167;
+  border: 1px solid #5a302c;
+  padding: 16px;
+}
+.council-error button {
+  font-size: 11px;
+  color: #d9d9d6;
+}
+.council-score {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid #2e3135;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+.council-score > span:first-child {
+  font-size: 10px;
+  color: #8a8d90;
+  letter-spacing: 0.08em;
+}
+.council-score strong {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 400;
+}
+.council-score > span:last-child {
+  margin-left: auto;
+}
+.council-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.council-layout aside {
+  position: sticky;
+  top: 20px;
+}
+.council-table-panel h2,
+.council-panel h2 {
+  font-size: 12px;
+  color: #d9d9d6;
+}
+.council-ring {
+  height: 360px;
+  max-width: 400px;
+  position: relative;
+  margin: 20px auto;
+  border: 1px solid #33373b;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #151719 0 30%, transparent 31%),
+    repeating-radial-gradient(circle, transparent 0 63px, #202326 64px 65px);
+}
+.council-ring-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+}
+.council-ring-core small {
+  color: #8a8d90;
+  font-size: 10px;
+}
+.council-seat {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 45px;
+  height: 45px;
+  border: 1px solid #666a6e;
+  background: #0c0d0e;
+  color: #d9d9d6;
+  font-size: 11px;
+}
+.council-seat.active {
+  border-color: #6cc3a0;
+  box-shadow: 0 0 0 5px #6cc3a021;
+  color: #6cc3a0;
+}
+.council-roster > div {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  min-height: 29px;
+  border-bottom: 1px solid #1e2023;
+  font-size: 11px;
+}
+.council-roster strong {
+  font-weight: 500;
+  color: #fff;
+}
+.council-roster small {
+  color: #8a8d90;
+  text-align: right;
+  white-space: nowrap;
+}
+.council-roster .speaking {
+  color: #6cc3a0;
+}
+.council-roster .speaking small {
+  color: #6cc3a0;
+}
+.council-fiction {
+  color: #8a8d90;
+  font-size: 10px;
+  margin-top: 12px;
+}
+.council-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.council-panel {
+  border: 1px solid #2e3135;
+  padding: 20px;
+}
+.council-section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #2e3135;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+.council-section-title span {
+  color: #8a8d90;
+  font-size: 10px;
+}
+.council-panel > .muted {
+  font-size: 12px;
+}
+.council-feed {
+  padding: 0;
+  list-style: none;
+  max-height: 520px;
+  overflow: auto;
+}
+.council-feed li {
+  padding: 16px 0;
+  border-bottom: 1px solid #232629;
+}
+.council-feed li:last-child {
+  border-bottom: 0;
+}
+.council-feed-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 9px;
+}
+.council-feed-head strong {
+  color: #fff;
+  font-weight: 500;
+}
+.council-feed-head span {
+  color: #8a8d90;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.council-feed p {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.council-feed-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: #6cc3a0;
+  font-size: 10px;
+  margin-top: 10px;
+}
+.council-feed-meta .stance-against {
+  color: #f07167;
+}
+.council-feed-meta .stance-conditional {
+  color: #e3b85a;
+}
+.council-map > p {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.council-map svg {
+  display: block;
+  width: 100%;
+  max-height: 300px;
+  background: #101214;
+}
+.council-map polygon {
+  fill: #191d20;
+  stroke: #596068;
+  stroke-width: 2;
+}
+.council-map .map-source polygon {
+  fill: #4a2d2b;
+  stroke: #f07167;
+}
+.council-map .map-target polygon {
+  fill: #234338;
+  stroke: #6cc3a0;
+}
+.council-map .map-contested polygon {
+  fill: #4b3923;
+  stroke: #e3b85a;
+  stroke-width: 3;
+}
+.council-map-objections {
+  border-left: 2px solid #e3b85a;
+  padding-left: 10px;
+  margin: 10px 0;
+  font-size: 11px;
+}
+.council-map-objections strong {
+  color: #e3b85a;
+  font-weight: 400;
+}
+.council-map-objections p {
+  margin-top: 4px;
+}
+.council-map text {
+  fill: #d9d9d6;
+  font-size: 13px;
+}
+.council-map line {
+  stroke: #e3b85a;
+  stroke-width: 4;
+}
+.council-map marker path {
+  fill: #e3b85a;
+}
+.council-map small {
+  color: #8a8d90;
+  font-size: 10px;
+}

@@ -32,6 +32,42 @@ describe('createDatabaseOptions', () => {
     ]);
   });
 
+  it('enables verified TLS with the configured database CA certificate', () => {
+    const options = createDatabaseOptions({
+      ...environment,
+      POSTGRES_CA_CERT:
+        '  -----BEGIN CERTIFICATE-----\nCA contents\n-----END CERTIFICATE-----\n',
+    });
+
+    expect(options.ssl).toEqual({
+      ca: '-----BEGIN CERTIFICATE-----\nCA contents\n-----END CERTIFICATE-----',
+      rejectUnauthorized: true,
+    });
+  });
+
+  it('accepts escaped newlines in a database CA certificate', () => {
+    const options = createDatabaseOptions({
+      ...environment,
+      POSTGRES_CA_CERT:
+        '-----BEGIN CERTIFICATE-----\\nCA contents\\n-----END CERTIFICATE-----',
+    });
+
+    expect(options.ssl).toEqual({
+      ca: '-----BEGIN CERTIFICATE-----\nCA contents\n-----END CERTIFICATE-----',
+      rejectUnauthorized: true,
+    });
+  });
+
+  it.each([undefined, '', ' \n '])(
+    'preserves driver TLS defaults when the CA certificate is %j',
+    (certificate) => {
+      expect(
+        createDatabaseOptions({ ...environment, POSTGRES_CA_CERT: certificate })
+          .ssl,
+      ).toBeUndefined();
+    },
+  );
+
   it('uses a configured database port', () => {
     expect(
       createDatabaseOptions({ ...environment, POSTGRES_PORT: '5434' }).port,
