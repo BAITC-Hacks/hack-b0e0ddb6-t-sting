@@ -64,3 +64,21 @@ The council follows the existing review: seven fictional roles derive positions 
 Council sessions persist their original plan, ordered events and protocol in PostgreSQL. Replayable SSE sends each event only after its write succeeds. Browser reconnection, saved replay and applying a recommendation are part of the flow. The provider adapter now uses OpenAI only through server-side fetch; no API key is required for local verification.
 
 The supplied reference contained a small numerical error: replacing M10 in Nura with M14 produces 56.62718 (displayed 56.63), not 56.64. Tests pin engine outputs without hardcoding presentation results into application behavior. LRT in Nura produces 57.20556 and the reference vote is five for, one abstention and one against.
+
+## September 23 — Outreach for adoption
+
+### English
+
+On September 23, alongside development, we wrote to four recipients.
+
+We asked Asad Bokhari at NU GSPP, whose research covers AI, e-government, and smart cities, to tell us where our model diverges from practice. We invited Didar Yedilkhan, Director of AITU's Smart City Research Center (`d.yedilkhan@astanait.edu.kz`), to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana. We also contacted Zhanar Ismailova and GSPP Executive Education (`zhanar.ismailova@nu.edu.kz`, `execed.gspp@nu.edu.kz`) about using the simulator as a training exercise for serving public officials who allocate budgets as part of their work.
+
+We offered the simulator free of charge, with no obligations. No replies had been received by the time of the final presentation.
+
+### Русский
+
+23 сентября, параллельно с разработкой, написали четверым.
+
+Асаду Бохари из NU GSPP — он исследует ИИ, электронное правительство и умные города; попросили сказать, где наша модель расходится с практикой. Дидару Едилхану, директору НИЦ Smart City в AITU (`d.yedilkhan@astanait.edu.kz`), предложили посмотреть рабочую версию и забрать её Центру: они ведут проекты по моделям SmartCity и городским данным в Астане. Жанар Исмаиловой и в Executive Education GSPP (`zhanar.ismailova@nu.edu.kz`, `execed.gspp@nu.edu.kz`) — использовать симулятор как упражнение в программах для действующих госслужащих, которые распределяют бюджет по работе.
+
+Отдаём бесплатно, без обязательств. Ответов на момент защиты пока нет.

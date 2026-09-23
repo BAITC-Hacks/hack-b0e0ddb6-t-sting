@@ -8,6 +8,26 @@ AI-симулятор акима для команд, городских ана�
 
 Публичное демо не развёрнуто. Локальное приложение: [localhost:5173](http://localhost:5173). [История разработки](BUILD_STORY.md), [исходный датасет](docs/data/astana-dataset.md), [план реализации](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [внешние инструменты](docs/EXTERNAL_TOOLS.md).
 
+## Outreach for adoption
+
+On September 23, alongside development, we contacted four recipients about expert feedback and potential use of the city management simulator:
+
+- **Asad Bokhari, NU GSPP** — feedback on where our model diverges from practice, drawing on his research into AI, e-government, and smart cities.
+- **Didar Yedilkhan, Director of AITU's Smart City Research Center** ([d.yedilkhan@astanait.edu.kz](mailto:d.yedilkhan@astanait.edu.kz)) — an invitation to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana.
+- **Zhanar Ismailova and GSPP Executive Education** ([zhanar.ismailova@nu.edu.kz](mailto:zhanar.ismailova@nu.edu.kz), [execed.gspp@nu.edu.kz](mailto:execed.gspp@nu.edu.kz)) — a proposal to use the simulator as a training exercise for serving public officials whose work involves allocating budgets.
+
+The simulator is offered free of charge, with no obligations. **No replies had been received by the time of the final presentation.** The outreach is recorded in our [build story](BUILD_STORY.md#september-23--outreach-for-adoption).
+
+## Обращения по внедрению
+
+23 сентября, параллельно с разработкой, мы направили четыре обращения — за экспертной обратной связью и с предложением использовать симулятор управления городом:
+
+- **Асаду Бохари из NU GSPP** — попросили оценить, где наша модель расходится с практикой. Он исследует ИИ, электронное правительство и умные города.
+- **Дидару Едилхану, директору НИЦ Smart City в AITU** ([d.yedilkhan@astanait.edu.kz](mailto:d.yedilkhan@astanait.edu.kz)) — предложили посмотреть рабочую версию и передать её Центру, который ведёт проекты по моделям SmartCity и городским данным в Астане.
+- **Жанар Исмаиловой и в Executive Education GSPP** ([zhanar.ismailova@nu.edu.kz](mailto:zhanar.ismailova@nu.edu.kz), [execed.gspp@nu.edu.kz](mailto:execed.gspp@nu.edu.kz)) — предложили использовать симулятор как учебное упражнение для действующих госслужащих, которые распределяют бюджет в своей работе.
+
+Передаём симулятор бесплатно, без обязательств. **На момент защиты ответов ещё не было.** Обращения сохранены в [истории проекта](BUILD_STORY.md#september-23--outreach-for-adoption).
+
 ## Запуск за одну команду
 
 Нужен Docker с Compose v2. В корне репозитория:
