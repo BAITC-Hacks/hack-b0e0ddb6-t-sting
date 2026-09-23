@@ -34,6 +34,7 @@ vi.mock('../src/api/simulation', () => ({
   submitPlan: vi.fn(),
 }));
 beforeEach(() => {
+  localStorage.setItem('qol-sim:onboarding:v1', 'seen');
   vi.mocked(checkHealth).mockReset().mockResolvedValue();
   vi.mocked(getScenario).mockReset().mockResolvedValue(scenario);
   vi.mocked(validatePlan)

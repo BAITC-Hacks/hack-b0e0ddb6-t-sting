@@ -4,6 +4,7 @@ test('checks the real browser, API, and database connection repeatedly', async (
   page,
 }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: 'пропустить', exact: true }).click();
   const checkButton = page.getByRole('button', { name: /API/ });
   await expect(checkButton).toHaveClass(/success/);
   // No interception: browser -> Vite -> Nest -> PostgreSQL.
@@ -31,6 +32,7 @@ test('shows progress and prevents duplicate checks while a request is pending', 
     await route.continue();
   });
   await page.goto('/');
+  await page.getByRole('button', { name: 'пропустить', exact: true }).click();
   const checkButton = page.getByRole('button', { name: /API/ });
   try {
     await expect(checkButton).toHaveClass(/loading/);
@@ -57,6 +59,7 @@ for (const failure of [
         });
     });
     await page.goto('/');
+    await page.getByRole('button', { name: 'пропустить', exact: true }).click();
     const checkButton = page.getByRole('button', { name: /API/ });
     await expect(checkButton).toHaveClass(/error/);
     await expect(checkButton).toBeEnabled();

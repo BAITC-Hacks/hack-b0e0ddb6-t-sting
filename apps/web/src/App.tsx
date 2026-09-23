@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { Plan } from './api/contracts';
 import { getScenario } from './api/simulation';
 import { Failure, Loading } from './components/Feedback';
@@ -7,11 +7,21 @@ import { Builder } from './features/builder/Builder';
 import { ReviewPage } from './features/review/ReviewPage';
 import { Registry } from './features/submissions/Registry';
 import { useResource } from './hooks/useResource';
+import { Onboarding } from './features/onboarding/Onboarding';
+import {
+  needsOnboarding,
+  rememberOnboarding,
+} from './features/onboarding/storage';
 export function App() {
   const { state, retry } = useResource(getScenario);
   const [page, setPage] = useState<Page>('builder');
   const [plan, setPlan] = useState<Plan>([]);
   const [canReview, setCanReview] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(needsOnboarding);
+  const closeOnboarding = useCallback(() => {
+    rememberOnboarding();
+    setShowOnboarding(false);
+  }, []);
   function changePlan(next: Plan) {
     setPlan(next);
     setCanReview(false);
@@ -25,6 +35,10 @@ export function App() {
         }
         canReview={canReview}
         onPage={setPage}
+        onHelp={() => {
+          setPage('builder');
+          setShowOnboarding(true);
+        }}
       />
       {state.status === 'loading' && (
         <section className="page-state">
@@ -40,6 +54,7 @@ export function App() {
       )}
       {state.status === 'success' && (
         <>
+          {showOnboarding && <Onboarding onClose={closeOnboarding} />}
           {page === 'builder' && (
             <>
               <h1 className="sr-only">Конструктор плана развития Астаны</h1>

@@ -28,10 +28,14 @@ export function Modal({
   title,
   onClose,
   children,
+  className = '',
+  headerActions,
 }: {
   title: string;
   onClose: () => void;
   children: React.ReactNode;
+  className?: string;
+  headerActions?: React.ReactNode;
 }) {
   const titleId = useId();
   const ref = useRef<HTMLDivElement>(null);
@@ -78,10 +82,11 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="modal"
+        className={`modal ${className}`}
       >
         <div className="section-heading">
           <h2 id={titleId}>{title}</h2>
+          {headerActions}
           <button aria-label="Закрыть диалог" onClick={onClose}>
             ×
           </button>
