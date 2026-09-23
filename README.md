@@ -12,7 +12,7 @@ Try the deployed app: [QOL-SIM](https://hackalem.cedra.team/).
 
 ## Doc files
 
-- [Build story](BUILD_STORY.md) — The hackathon development timeline, including product decisions, implementation milestones, and lessons from testing.
+- [Build story](docs/BUILD_STORY.md) — The hackathon development timeline, including product decisions, implementation milestones, and lessons from testing.
 - [Source dataset](docs/data/astana-dataset.md) — The scenario's district indicators and measure catalog, including costs, implementation lags, and effects.
 - [Implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md) — The original simulator plan, covering architecture, API contracts, implementation steps, and validation checks.
 - [External tools](docs/EXTERNAL_TOOLS.md) — The inventory of vendored agent skills, their sources and pinned revisions, attribution, licensing, and update instructions.
@@ -207,7 +207,7 @@ On September 23, alongside development, we contacted four recipients about exper
 - **Didar Yedilkhan, Director of AITU's Smart City Research Center** ([d.yedilkhan@astanait.edu.kz](mailto:d.yedilkhan@astanait.edu.kz)) — an invitation to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana.
 - **Zhanar Ismailova and GSPP Executive Education** ([zhanar.ismailova@nu.edu.kz](mailto:zhanar.ismailova@nu.edu.kz), [execed.gspp@nu.edu.kz](mailto:execed.gspp@nu.edu.kz)) — a proposal to use the simulator as a training exercise for serving public officials whose work involves allocating budgets.
 
-The simulator is offered free of charge, with no obligations. **No replies had been received by the time of the final presentation.** The outreach is recorded in our [build story](BUILD_STORY.md#september-23--outreach-for-adoption).
+The simulator is offered free of charge, with no obligations. **No replies had been received by the time of the final presentation.** The outreach is recorded in our [build story](docs/BUILD_STORY.md#september-23--outreach-for-adoption).
 
 ## Challenge requirements
 
