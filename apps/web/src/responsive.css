@@ -79,8 +79,13 @@
     padding: 20px 16px;
   }
   .masthead nav {
-    gap: 14px;
+    gap: 8px 14px;
     font-size: 12px;
+    flex-wrap: wrap;
+  }
+  .header-controls {
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .map-legend {
     gap: 12px;

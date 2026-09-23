@@ -11,7 +11,7 @@ const adapter = vi.hoisted(() => ({
   complete: vi.fn(async () => []),
 }));
 vi.mock('../../src/analysis/llm-client', () => ({
-  AnthropicLlmClient: class {
+  OpenAiLlmClient: class {
     complete = adapter.complete;
     constructor(key: string, model: string) {
       adapter.construct(key, model);
@@ -58,7 +58,7 @@ describe('analysis endpoint and configuration', () => {
   it('uses configured key and model without exposing them in the response', async () => {
     const { simulation } = fakeSimulation();
     const service = createAnalysisService(simulation, {
-      ANTHROPIC_API_KEY: ' key ',
+      OPENAI_API_KEY: ' key ',
       AI_MODEL: ' custom-model ',
       AI_TIMEOUT_MS: '5',
     });
@@ -72,7 +72,7 @@ describe('analysis endpoint and configuration', () => {
     const { simulation } = fakeSimulation();
     let resolved = false;
     const pending = createAnalysisService(simulation, {
-      ANTHROPIC_API_KEY: 'key',
+      OPENAI_API_KEY: 'key',
       AI_TIMEOUT_MS: '5',
     })
       .analyze(plan)
@@ -87,15 +87,12 @@ describe('analysis endpoint and configuration', () => {
   });
 
   it('reads process environment by default and uses the supported default model', async () => {
-    vi.stubEnv('ANTHROPIC_API_KEY', 'key');
+    vi.stubEnv('OPENAI_API_KEY', 'key');
     vi.stubEnv('AI_MODEL', '');
     vi.stubEnv('AI_TIMEOUT_MS', 'invalid');
     const { simulation } = fakeSimulation();
     await createAnalysisService(simulation).analyze(plan);
-    expect(adapter.construct).toHaveBeenCalledWith(
-      'key',
-      'claude-sonnet-4-5-20250929',
-    );
+    expect(adapter.construct).toHaveBeenCalledWith('key', 'gpt-4.1-mini');
   });
 
   it.each(['0', '-1', '99999', 'Infinity', ''])(
@@ -105,7 +102,7 @@ describe('analysis endpoint and configuration', () => {
       adapter.complete.mockImplementationOnce(() => new Promise(() => {}));
       const { simulation } = fakeSimulation();
       const report = createAnalysisService(simulation, {
-        ANTHROPIC_API_KEY: 'key',
+        OPENAI_API_KEY: 'key',
         AI_TIMEOUT_MS,
       }).analyze(plan);
       await vi.advanceTimersByTimeAsync(25000);

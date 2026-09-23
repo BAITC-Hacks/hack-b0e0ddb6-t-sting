@@ -22,7 +22,7 @@ export default defineConfig({
       command:
         'npm run build -w @app/api && npm run migration:run && npm start -w @app/api',
       url: `${apiURL}/api/health`,
-      env: { API_PORT: '3100', ANTHROPIC_API_KEY: '' },
+      env: { API_PORT: '3100', OPENAI_API_KEY: '' },
       reuseExistingServer: false,
       timeout: 120_000,
     },

@@ -1,7 +1,7 @@
 import type { Plan } from '../simulation/engine/types';
 import type { AnalysisSimulation, LlmClient } from './contracts';
 import { runAnalyst } from './analyst-agent';
-import { AnthropicLlmClient } from './llm-client';
+import { OpenAiLlmClient } from './llm-client';
 
 export class AnalysisService {
   constructor(
@@ -28,8 +28,8 @@ export function createAnalysisService(
   simulation: AnalysisSimulation,
   env: NodeJS.ProcessEnv = process.env,
 ): AnalysisService {
-  const key = env.ANTHROPIC_API_KEY?.trim();
-  const model = env.AI_MODEL?.trim() || 'claude-sonnet-4-5-20250929';
+  const key = env.OPENAI_API_KEY?.trim();
+  const model = env.AI_MODEL?.trim() || 'gpt-4.1-mini';
   const configured = Number(env.AI_TIMEOUT_MS);
   const timeout =
     Number.isFinite(configured) && configured > 0
@@ -37,7 +37,7 @@ export function createAnalysisService(
       : 25000;
   return new AnalysisService(
     simulation,
-    key ? new AnthropicLlmClient(key, model) : null,
+    key ? new OpenAiLlmClient(key, model) : null,
     timeout,
   );
 }
