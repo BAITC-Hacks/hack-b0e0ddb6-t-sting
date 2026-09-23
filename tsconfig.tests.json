@@ -12,6 +12,8 @@
     "apps/*/src",
     "apps/*/tests",
     "apps/*/vite.config.ts",
-    "vitest.config.mts"
+    "vitest.config.mts",
+    "playwright.config.ts",
+    "e2e/**/*.ts"
   ]
 }

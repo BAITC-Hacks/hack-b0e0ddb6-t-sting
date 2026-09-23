@@ -94,7 +94,7 @@ The smoke command checks direct API health, the Vite proxy, page serving, and th
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
 ```
 
-CI runs code and workflow linting, formatting, typechecking, unit coverage, builds, and a real Compose smoke/migration check on pull requests and pushes to `main`.
+CI runs code and workflow linting, formatting, typechecking, unit coverage, builds, Playwright browser tests, and a real Compose smoke/migration check on pull requests and pushes to `main`.
 
 Additional useful commands:
 
@@ -107,6 +107,33 @@ npm run preview -w @app/web
 ```
 
 The last two commands require `npm run build`. Vite preview uses port 4173 and still needs a running API. `db:down` stops PostgreSQL without deleting its data.
+
+## Browser end-to-end tests
+
+Playwright runs five Chromium tests against the connection page. The happy path exercises the real browser → Vite proxy → NestJS → PostgreSQL flow, including repeated checks. Other tests hold a request to verify progress and the disabled button, or inject a single HTTP 503, invalid payload, or network failure and then retry against the real API. Fault injection is browser-local; tests never stop shared services or modify database records. No seed data or migrations are needed for the current `SELECT 1` health check.
+
+After the local Node setup above (`npm ci` and a configured `.env`), run:
+
+```sh
+npx playwright install chromium
+npm run db:up
+npm run test:e2e
+```
+
+On Linux, install browser system dependencies with `npx playwright install --with-deps chromium`. An existing PostgreSQL server configured in `.env` also works; omit `db:up` in that case. Use a local/test database. The tests require a healthy database and fail at startup if the API cannot connect.
+
+Playwright builds and starts its own API on **127.0.0.1:3100** and a Vite server on **127.0.0.1:5174**, then stops them when the run ends. Both ports must be free: existing servers are deliberately never reused, so tests cannot silently target another checkout. The API reads database settings from the root `.env` (exported variables take precedence); test server ports and the proxy target override development settings. PostgreSQL stays running until you stop it with `npm run db:down`.
+
+```sh
+npm run test:e2e -- --headed       # Watch Chromium
+npm run test:e2e:ui                # Interactive test runner
+npm run test:e2e:report            # Open the last HTML report
+npm run test:e2e -- --repeat-each=3 # Check repeatability
+```
+
+Tests use isolated browser contexts, accessible role locators, and condition-based assertions rather than fixed sleeps. Retries are disabled so failures remain visible. Chromium is the supported browser target; Firefox and WebKit are not covered. `npm test` and `npm run check` remain service-free unit/static checks; run `npm run test:e2e` separately for browser verification. Both the Playwright config and tests are included in `npm run typecheck`.
+
+The CI `e2e` job starts a separate PostgreSQL Compose project, installs Chromium with its system dependencies, runs the same command, and always tears down its test database volume. It uploads the HTML report plus failure screenshots/traces for seven days. Locally these generated files are gitignored under `playwright-report/` and `test-results/`; a failed test's trace can be opened from the HTML report.
 
 ## Architecture
 
