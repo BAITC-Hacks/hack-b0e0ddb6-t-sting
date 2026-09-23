@@ -4,6 +4,14 @@ import { getScenario } from './api/simulation';
 import { Failure, Loading } from './components/Feedback';
 import { Header, type Page } from './components/Header';
 import { Builder } from './features/builder/Builder';
+import { CouncilPage } from './features/council/CouncilPage';
+import {
+  clearCouncilSession,
+  savedCouncilPlan,
+  savedCouncilSession,
+  saveCouncilPlan,
+  saveCouncilSession,
+} from './features/council/storage';
 import { ReviewPage } from './features/review/ReviewPage';
 import { Registry } from './features/submissions/Registry';
 import { useResource } from './hooks/useResource';
@@ -14,9 +22,14 @@ import {
 } from './features/onboarding/storage';
 export function App() {
   const { state, retry } = useResource(getScenario);
-  const [page, setPage] = useState<Page>('builder');
-  const [plan, setPlan] = useState<Plan>([]);
-  const [canReview, setCanReview] = useState(false);
+  const [sessionId, setSessionId] = useState(savedCouncilSession);
+  const [page, setPage] = useState<Page>(() =>
+    savedCouncilSession() ? 'council' : 'builder',
+  );
+  const [plan, setPlan] = useState<Plan>(savedCouncilPlan);
+  const [canReview, setCanReview] = useState(() =>
+    Boolean(savedCouncilSession() && savedCouncilPlan().length),
+  );
   const [showOnboarding, setShowOnboarding] = useState(needsOnboarding);
   const closeOnboarding = useCallback(() => {
     rememberOnboarding();
@@ -25,6 +38,14 @@ export function App() {
   function changePlan(next: Plan) {
     setPlan(next);
     setCanReview(false);
+    setSessionId(null);
+    clearCouncilSession();
+  }
+  function applyCouncilPlan(next: Plan) {
+    setPlan(next);
+    setCanReview(true);
+    saveCouncilPlan(next);
+    setPage('review');
   }
   return (
     <main className="app-shell">
@@ -34,6 +55,7 @@ export function App() {
           state.status === 'success' ? state.data.version : 'загрузка сценария'
         }
         canReview={canReview}
+        canCouncil={Boolean(sessionId)}
         onPage={setPage}
         onHelp={() => {
           setPage('builder');
@@ -76,6 +98,20 @@ export function App() {
               plan={plan}
               onApply={setPlan}
               onRegistry={() => setPage('registry')}
+              onCouncil={(id) => {
+                setSessionId(id);
+                saveCouncilSession(id, plan);
+                setPage('council');
+              }}
+              onReplayCouncil={sessionId ? () => setPage('council') : undefined}
+            />
+          )}
+          {page === 'council' && sessionId && (
+            <CouncilPage
+              sessionId={sessionId}
+              scenario={state.data}
+              onBack={() => setPage(plan.length ? 'review' : 'builder')}
+              onApply={applyCouncilPlan}
             />
           )}
           {page === 'registry' && (
