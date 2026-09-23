@@ -47,6 +47,16 @@ The city data is synthetic: this is a way to explore trade-offs and learn from d
 - **Deployment setup:** The [developer guide](docs/DEVELOPMENT.md#digitalocean-app-platform) covers DigitalOcean App Platform and Managed PostgreSQL, including pre-deploy migrations and database TLS certificates.
 - **AI development tools:** Codex and Claude Code, with shared repository instructions and vendored Vercel skills for React composition, performance, view transitions, and interface reviews. Sources and licensing are recorded in [External tools](docs/EXTERNAL_TOOLS.md).
 
+## Outreach for adoption
+
+On September 23, alongside development, we contacted four recipients about expert feedback and potential use of the city management simulator:
+
+- **Asad Bokhari, NU GSPP** — feedback on where our model diverges from practice, drawing on his research into AI, e-government, and smart cities.
+- **Didar Yedilkhan, Director of AITU's Smart City Research Center** ([d.yedilkhan@astanait.edu.kz](mailto:d.yedilkhan@astanait.edu.kz)) — an invitation to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana.
+- **Zhanar Ismailova and GSPP Executive Education** ([zhanar.ismailova@nu.edu.kz](mailto:zhanar.ismailova@nu.edu.kz), [execed.gspp@nu.edu.kz](mailto:execed.gspp@nu.edu.kz)) — a proposal to use the simulator as a training exercise for serving public officials whose work involves allocating budgets.
+
+The simulator is offered free of charge, with no obligations. **No replies had been received by the time of the final presentation.** The outreach is recorded in our [build story](docs/BUILD_STORY.md#september-23--outreach-for-adoption).
+
 ## One-command startup
 
 Requires Docker with Compose v2. From the repository root:
@@ -198,16 +208,6 @@ React / Vite → same-origin /api proxy → NestJS
 The agent uses `evaluate_plan`, `explain_contributions`, `get_rank`, `find_best_swaps`, and `evaluate_alternative`. It is limited to six steps, with an overall timeout of 25 seconds by default. Numbers and valid alternatives come from the tools. The final response is checked for structural validity. An additional check rejects numeric literals absent from the tool results, allowing for rounding. It does not verify whether a number refers to the correct district or claim; this is not full semantic validation. The offline review formats engine results directly.
 
 The registry is public and has no authentication: a team name is a label, not a protected account. Names are compared case-insensitively. Submission history is retained, and the table shows each team's best result; when Scores are equal, the earlier submission wins.
-
-## Outreach for adoption
-
-On September 23, alongside development, we contacted four recipients about expert feedback and potential use of the city management simulator:
-
-- **Asad Bokhari, NU GSPP** — feedback on where our model diverges from practice, drawing on his research into AI, e-government, and smart cities.
-- **Didar Yedilkhan, Director of AITU's Smart City Research Center** ([d.yedilkhan@astanait.edu.kz](mailto:d.yedilkhan@astanait.edu.kz)) — an invitation to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana.
-- **Zhanar Ismailova and GSPP Executive Education** ([zhanar.ismailova@nu.edu.kz](mailto:zhanar.ismailova@nu.edu.kz), [execed.gspp@nu.edu.kz](mailto:execed.gspp@nu.edu.kz)) — a proposal to use the simulator as a training exercise for serving public officials whose work involves allocating budgets.
-
-The simulator is offered free of charge, with no obligations. **No replies had been received by the time of the final presentation.** The outreach is recorded in our [build story](docs/BUILD_STORY.md#september-23--outreach-for-adoption).
 
 ## Challenge requirements
 
