@@ -199,6 +199,16 @@ The agent uses `evaluate_plan`, `explain_contributions`, `get_rank`, `find_best_
 
 The registry is public and has no authentication: a team name is a label, not a protected account. Names are compared case-insensitively. Submission history is retained, and the table shows each team's best result; when Scores are equal, the earlier submission wins.
 
+## Outreach for adoption
+
+On September 23, alongside development, we contacted four recipients about expert feedback and potential use of the city management simulator:
+
+- **Asad Bokhari, NU GSPP** — feedback on where our model diverges from practice, drawing on his research into AI, e-government, and smart cities.
+- **Didar Yedilkhan, Director of AITU's Smart City Research Center** ([d.yedilkhan@astanait.edu.kz](mailto:d.yedilkhan@astanait.edu.kz)) — an invitation to review the working version and take it forward at the Center, which works on SmartCity models and urban data in Astana.
+- **Zhanar Ismailova and GSPP Executive Education** ([zhanar.ismailova@nu.edu.kz](mailto:zhanar.ismailova@nu.edu.kz), [execed.gspp@nu.edu.kz](mailto:execed.gspp@nu.edu.kz)) — a proposal to use the simulator as a training exercise for serving public officials whose work involves allocating budgets.
+
+The simulator is offered free of charge, with no obligations. **No replies had been received by the time of the final presentation.** The outreach is recorded in our [build story](BUILD_STORY.md#september-23--outreach-for-adoption).
+
 ## Challenge requirements
 
 We track the challenge's requirements and supporting evidence in the [version 0.1 plan](docs/compliance/PLAN.md) and the [initial requirements map](docs/compliance/RULES_MAP.md). These are **works in progress**: further detail and final README coverage are still being developed, and full compliance is not yet claimed.
