@@ -10,6 +10,10 @@ With a limited budget, a useful initiative does not necessarily make the whole c
 
 Try the deployed app: [QOL-SIM](https://hackalem.cedra.team/).
 
+## Demo Video
+
+[Watch the demo video](https://drive.google.com/file/d/1oXhBEGuC_Tg0gTjOR1tAu-iqICBbg92n/view?usp=sharing).
+
 ## Doc files
 
 - [Build story](docs/BUILD_STORY.md) — The hackathon development timeline, including product decisions, implementation milestones, and lessons from testing.
