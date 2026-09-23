@@ -64,12 +64,19 @@ If a port is occupied, change it in `.env`. For local Node development, update `
 ## Commands and validation
 
 ```sh
-npm run check       # Typecheck, coverage tests, builds, formatting
-npm test            # Isolated unit tests with enforced coverage
-npm run test:watch  # Unit tests while editing
-npm run build       # Build both workspaces
-npm run format     # Format maintained project files
+npm run check        # Lint, formatting, typecheck, coverage tests, builds
+npm run lint         # Check application, test, script, and config code
+npm run lint:fix     # Apply safe ESLint fixes; report remaining issues
+npm run format:check # Check maintained project file formatting
+npm test             # Isolated unit tests with enforced coverage
+npm run test:watch   # Unit tests while editing
+npm run build        # Build both workspaces
+npm run format       # Format maintained project files
 ```
+
+ESLint uses the recommended JavaScript, TypeScript, and React Hooks rules. Prettier owns formatting, with `eslint-config-prettier` disabling conflicting lint rules. Lint warnings fail checks. Run `npm run lint:fix` and `npm run format` to apply fixes, then `npm run check` before opening a pull request.
+
+Generated dependencies, builds, and coverage output are ignored. Both tools leave `.agents/` and `.claude/` untouched to preserve vendored skill contents; Prettier also preserves `AGENTS.md` and `CLAUDE.md`. Validate skill synchronization with `diff -qr .agents/skills .claude/skills`.
 
 The unit suite has 52 tests and enforces **100% lines, branches, functions, and statements per application file**. Tests cover configuration boundaries, database health/error handling, malformed responses, timeouts, and UI progress/retry behavior. Database queries and browser network requests are mocked at their external boundaries; unit tests need no running services.
 
@@ -92,7 +99,7 @@ The smoke command checks direct API health, the Vite proxy, page serving, and th
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
 ```
 
-CI runs formatting, typechecking, unit coverage, builds, and a real Compose smoke/migration check on pull requests and pushes to `main`.
+CI runs linting, formatting, typechecking, unit coverage, builds, and a real Compose smoke/migration check on pull requests and pushes to `main`.
 
 Additional useful commands:
 
@@ -125,7 +132,7 @@ TypeORM → PostgreSQL SELECT 1
 - `apps/api/src/config`: root `.env` loading and required-value/port validation.
 - `apps/api/src/database`: TypeORM options and migration CLI data source.
 - `apps/*/tests`: behavior tests organized alongside each application's source structure.
-- Root: npm workspaces, strict TypeScript, Vitest/V8 coverage, Prettier, Docker Compose, and GitHub Actions.
+- Root: npm workspaces, strict TypeScript, Vitest/V8 coverage, ESLint, Prettier, Docker Compose, and GitHub Actions.
 
 A healthy database returns `200` with `{"status":"ok","database":"up"}`. A failed query returns `503` with `{"status":"error","database":"down"}` without exposing connection details. Responses use `Cache-Control: no-store`. Missing required settings and invalid API/database/web ports fail with clear startup errors; an unreachable database prevents API startup after Nest's connection retries.
 

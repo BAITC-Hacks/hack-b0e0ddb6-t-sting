@@ -1,7 +1,12 @@
+# Generated files and dependencies
 package-lock.json
 node_modules
 dist
+build
 coverage
+.vite
+
+# Preserve vendored skills and agent instructions verbatim
 .agents
 .claude
 AGENTS.md
