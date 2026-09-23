@@ -3,6 +3,12 @@ node_modules/
 bower_components/
 jspm_packages/
 
+# Python tooling
+venv/
+.venv/
+__pycache__/
+*.pyc
+
 # Package-manager caches and logs
 .npm/
 .pnpm-store/

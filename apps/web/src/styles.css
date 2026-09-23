@@ -1,0 +1,260 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #16352e;
+  background: #f5f7f2;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 1120px;
+  padding: 0 48px;
+  margin: auto;
+}
+.masthead {
+  height: 112px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #d9e0d6;
+  gap: 20px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 700;
+  font-size: 16px;
+}
+.brand-mark {
+  background: #16352e;
+  color: #d8e99c;
+  border-radius: 10px;
+  width: 37px;
+  height: 37px;
+  text-align: center;
+  line-height: 35px;
+  font-size: 24px;
+}
+.environment {
+  font-size: 12px;
+  color: #52675d;
+  border: 1px solid #cbd5c5;
+  border-radius: 30px;
+  padding: 8px 13px;
+}
+.intro {
+  padding: 76px 0 48px;
+}
+.eyebrow,
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+.eyebrow {
+  text-transform: uppercase;
+  color: #5c705c;
+  margin: 0 0 22px;
+}
+h1 {
+  font-size: clamp(42px, 6vw, 70px);
+  line-height: 1.09;
+  letter-spacing: -3px;
+  margin: 0 0 24px;
+  font-weight: 600;
+}
+.lede {
+  max-width: 510px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #627266;
+}
+.stack {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+.stack span {
+  font-size: 12px;
+  padding: 7px 11px;
+  border-radius: 5px;
+  background: #e8ede3;
+}
+.connection {
+  border: 1px solid #cfdbc5;
+  border-radius: 12px;
+  background: #fffefa;
+  overflow: hidden;
+}
+.section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.connection > .section-label {
+  padding: 17px 25px;
+  background: #edf2e5;
+  border-bottom: 1px solid #dce4d4;
+}
+code {
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.connection-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 30px 25px;
+}
+.connection-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.status-dot {
+  flex-shrink: 0;
+  margin-top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8d9d82;
+  box-shadow: 0 0 0 5px #edf2e5;
+}
+.success .status-dot {
+  background: #318350;
+}
+.error .status-dot {
+  background: #b74b37;
+  box-shadow: 0 0 0 5px #faebe5;
+}
+.checking .status-dot {
+  background: #967523;
+}
+.connection h2 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+.connection p {
+  margin: 0;
+  font-size: 13px;
+  color: #627266;
+  line-height: 1.6;
+  max-width: 450px;
+}
+button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 7px;
+  background: #183e31;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+button:hover {
+  background: #2b5541;
+}
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #618636;
+  outline-offset: 4px;
+}
+.workspace {
+  margin: 44px 0 55px;
+}
+.workspace > h2 {
+  margin: 0 0 23px;
+  color: #627266;
+}
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+.workspace article + article {
+  border-left: 1px solid #d9e0d6;
+  padding-left: 48px;
+}
+.folder {
+  font-family: monospace;
+  font-size: 12px;
+  color: #657958;
+}
+h3 {
+  font-size: 19px;
+  margin: 13px 0 10px;
+  font-weight: 600;
+}
+.workspace p {
+  color: #627266;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 360px;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid #d9e0d6;
+  padding: 25px 0 32px;
+  font-size: 11px;
+  color: #6b7a6f;
+}
+@media (max-width: 680px) {
+  main {
+    padding: 0 24px;
+  }
+  .masthead {
+    height: 90px;
+  }
+  .brand {
+    font-size: 13px;
+  }
+  .environment {
+    font-size: 10px;
+    padding: 6px 9px;
+  }
+  .intro {
+    padding-top: 50px;
+  }
+  h1 {
+    letter-spacing: -2px;
+  }
+  .connection-body {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .workspace-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .workspace article + article {
+    border-left: 0;
+    border-top: 1px solid #d9e0d6;
+    padding: 25px 0 0;
+  }
+  footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
