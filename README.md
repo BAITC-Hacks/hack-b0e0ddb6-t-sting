@@ -155,6 +155,8 @@ N_crit = число значений строго ниже 40
 
 ## Архитектура
 
+Для нового bounded runtime Builder 2 подготовлена [опциональная граница интеграции](docs/GAME_RUNTIME_INTEGRATION.md). Она выключена по умолчанию; текущий игровой интерфейс использует прежнее ядро до совместимого handoff Builder 1 и подтверждения reference wrapper.
+
 ```text
 React / Vite → same-origin /api proxy → NestJS
                                           ├─ SimulationService → чистый TypeScript-движок
