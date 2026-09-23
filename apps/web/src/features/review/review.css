@@ -36,6 +36,31 @@
   white-space: nowrap;
   font-size: 12px;
 }
+.review-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.review-actions .primary,
+.review-actions .outline {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.review-replay {
+  font-size: 11px;
+  color: var(--muted);
+}
+.review-council-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 26px;
+}
+.review-council-actions .primary {
+  min-width: 180px;
+}
 .review-sidebar {
   display: flex;
   flex-direction: column;
