@@ -6,6 +6,7 @@ test('deliberates offline, rejects over-budget packages, restores and applies th
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
+  await page.getByRole('button', { name: 'пропустить', exact: true }).click();
   await page.getByRole('button', { name: 'пример плана', exact: true }).click();
   await page.getByRole('button', { name: /разобрать партию/ }).click();
   await expect(page.locator('.score-number')).toHaveText('56,54');
@@ -16,6 +17,12 @@ test('deliberates offline, rejects over-budget packages, restores and applies th
   await expect(page.getByLabel('Голосование')).toContainText('5 за');
   await expect(page.getByText(/персонажи вымышленные/)).toBeVisible();
   await page.reload();
+  await expect(page.getByLabel('Протокол заседания')).toContainText('57,21');
+  await page.getByRole('button', { name: /как это работает/ }).click();
+  await page.getByRole('button', { name: 'Шаг 7: Результаты' }).click();
+  await page.getByRole('button', { name: 'собрать план →' }).click();
+  await expect(page.getByRole('button', { name: 'Удалить M7' })).toBeVisible();
+  await page.getByRole('button', { name: 'совет', exact: true }).click();
   await expect(page.getByLabel('Протокол заседания')).toContainText('57,21');
   await page.screenshot({ path: testInfo.outputPath('council.png') });
   await page

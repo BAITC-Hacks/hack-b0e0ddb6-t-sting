@@ -6,6 +6,7 @@ test('reviews the real plan, applies an improvement, and persists the result', a
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
+  await page.getByRole('button', { name: 'пропустить', exact: true }).click();
   await expect(page).toHaveTitle('QOL-SIM — Разбор партии');
   await page.getByRole('button', { name: 'пример плана', exact: true }).click();
   await page.getByRole('button', { name: /разобрать партию/ }).click();
@@ -47,6 +48,7 @@ test('blocks invalid plans and exposes the harmful plan’s negative effect on m
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
+  await page.getByRole('button', { name: 'пропустить', exact: true }).click();
   await expect(
     page.getByRole('button', { name: /разобрать партию/ }),
   ).toBeDisabled();
@@ -69,6 +71,7 @@ test('keeps real keyboard focus inside the district radio dialog', async ({
   page,
 }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: 'пропустить', exact: true }).click();
   await page.getByRole('button', { name: /M1 Выделенные/ }).click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();

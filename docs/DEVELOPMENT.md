@@ -11,7 +11,7 @@ cp .env.example .env
 docker compose up --build --wait --wait-timeout 180
 ```
 
-Open [localhost:5173](http://localhost:5173) and select **пример плана**, then **разобрать партию**. The result shows Score 56.54, exact contributions, ranking, suggested replacements, and an analyst explanation. The header connection indicator checks API/database health and supports retry. The API listens on [localhost:3000](http://localhost:3000).
+Open [localhost:5173](http://localhost:5173), finish or skip **как это работает**, and select **пример плана**, then **разобрать партию**. The result shows Score 56.54, exact contributions, ranking, suggested replacements, and an analyst explanation. The header connection indicator checks API/database health and supports retry. The API listens on [localhost:3000](http://localhost:3000).
 
 The example password is for local development only. Set your own value in `.env` before starting the database. PostgreSQL initializes credentials only on an empty data volume; changing `.env` later does not change an existing database password.
 

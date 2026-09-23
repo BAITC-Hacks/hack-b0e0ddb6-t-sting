@@ -83,6 +83,7 @@ const session: CouncilSession = {
 };
 beforeEach(() => {
   localStorage.clear();
+  localStorage.setItem('qol-sim:onboarding:v1', 'seen');
   vi.mocked(checkHealth).mockReset().mockResolvedValue();
   vi.mocked(getScenario).mockReset().mockResolvedValue(scenario);
   vi.mocked(validatePlan)
@@ -109,6 +110,36 @@ async function openReview() {
 }
 
 describe('council application journey', () => {
+  it('preserves a restored council and its plan through onboarding', async () => {
+    localStorage.removeItem('qol-sim:onboarding:v1');
+    localStorage.setItem('qol-council-session', session.id);
+    localStorage.setItem(
+      'qol-council-plan',
+      JSON.stringify(scenario.examples.strong),
+    );
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: 'пропустить' }));
+    expect(
+      await screen.findByRole('region', { name: 'Протокол заседания' }),
+    ).toHaveTextContent('57,21');
+
+    fireEvent.click(screen.getByRole('button', { name: /как это работает/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Шаг 7: Результаты' }));
+    fireEvent.click(screen.getByRole('button', { name: 'собрать план →' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Удалить M7' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'результаты' })).toBeEnabled();
+    expect(localStorage.getItem('qol-council-session')).toBe(session.id);
+    expect(JSON.parse(localStorage.getItem('qol-council-plan')!)).toEqual(
+      scenario.examples.strong,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'совет' }));
+    expect(
+      await screen.findByRole('region', { name: 'Протокол заседания' }),
+    ).toHaveTextContent('57,21');
+  });
   it('starts from review and applies the verified package as a new review while retaining replay', async () => {
     render(<App />);
     await openReview();

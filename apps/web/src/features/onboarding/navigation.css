@@ -1,0 +1,141 @@
+.onboarding-results ol {
+  list-style: none;
+  counter-reset: results;
+  padding: 0;
+  margin: 12px 0;
+}
+.onboarding-results li {
+  counter-increment: results;
+  display: grid;
+  grid-template-columns: 24px 190px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #1e2023;
+}
+.onboarding-results li::before {
+  content: counter(results);
+  color: var(--muted);
+}
+.onboarding-results li p,
+.onboarding-glossary {
+  font-size: 12px;
+}
+.onboarding-glossary-toggle {
+  display: block;
+  min-height: 44px;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.onboarding-glossary dt {
+  color: #fff;
+}
+.onboarding-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+  margin-top: 28px;
+}
+.onboarding-dots,
+.onboarding-actions {
+  display: flex;
+}
+.onboarding-actions {
+  gap: 12px;
+}
+.onboarding-dots button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 44px;
+}
+.onboarding-dots span {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #3a3d41;
+}
+.onboarding-dots .visited span {
+  background: var(--muted);
+}
+.onboarding-dots [aria-current='step'] span {
+  width: 10px;
+  height: 10px;
+  background: #d9d9d6;
+  border-color: #d9d9d6;
+}
+.onboarding-actions button {
+  min-height: 44px;
+}
+@media (max-width: 1100px) {
+  .masthead {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 700px) {
+  .modal.onboarding {
+    padding: 20px;
+    min-height: min(600px, calc(100dvh - 32px));
+  }
+  .onboarding-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .onboarding-content > h3 {
+    max-width: none;
+    font-size: 17px;
+  }
+  .onboarding > .section-heading {
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .onboarding-footer {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .onboarding-actions {
+    width: 100%;
+  }
+  .onboarding-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+  .onboarding-results li {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .onboarding-results li p {
+    grid-column: 2;
+  }
+  .onboarding-glossary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .onboarding-glossary dd + dt {
+    margin-top: 8px;
+  }
+}
+@media (max-width: 380px) {
+  .modal.onboarding {
+    padding: 16px;
+  }
+  .onboarding > .section-heading h2 {
+    font-size: 11px;
+  }
+  .onboarding-segments > span {
+    margin-right: 0;
+  }
+  .onboarding-segments button {
+    min-width: 34px;
+    padding-inline: 8px;
+  }
+  .onboarding-values {
+    font-size: 11px;
+    column-gap: 10px;
+  }
+  .onboarding-rule-card {
+    padding: 12px;
+  }
+}

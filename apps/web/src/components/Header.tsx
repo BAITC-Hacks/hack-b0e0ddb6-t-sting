@@ -13,12 +13,14 @@ export function Header({
   canReview,
   canCouncil,
   onPage,
+  onHelp,
 }: {
   page: Page;
   version: string;
   canReview: boolean;
   canCouncil?: boolean;
   onPage: (page: Page) => void;
+  onHelp: () => void;
 }) {
   const { state, retry } = useResource(checkHealth);
   const health = {
@@ -51,6 +53,9 @@ export function Header({
             </button>
           ))}
         </nav>
+        <button className="onboarding-trigger" onClick={onHelp}>
+          [?] как это работает
+        </button>
         <button
           className={`api-status ${state.status}`}
           disabled={state.status === 'loading'}
