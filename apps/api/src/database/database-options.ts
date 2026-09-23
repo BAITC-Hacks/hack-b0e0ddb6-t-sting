@@ -5,6 +5,9 @@ import { getPort, requiredValue } from '../config/environment';
 export function createDatabaseOptions(
   env: Record<string, string | undefined>,
 ): Extract<DataSourceOptions, { type: 'postgres' }> {
+  // App Platform injects PEM certificates; also accept escaped newlines from .env.
+  const ca = env.POSTGRES_CA_CERT?.replace(/\\n/g, '\n').trim();
+
   return {
     type: 'postgres',
     host: requiredValue(env, 'POSTGRES_HOST'),
@@ -12,6 +15,7 @@ export function createDatabaseOptions(
     username: requiredValue(env, 'POSTGRES_USER'),
     password: requiredValue(env, 'POSTGRES_PASSWORD'),
     database: requiredValue(env, 'POSTGRES_DB'),
+    ssl: ca ? { ca, rejectUnauthorized: true } : undefined,
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/migrations/*{.ts,.js}'],
     synchronize: false,
