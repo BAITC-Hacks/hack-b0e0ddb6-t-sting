@@ -1,214 +1,216 @@
-# QOL-SIM — Разбор партии
+# QOL-SIM — Game Review
 
-AI-симулятор акима для команд, городских аналитиков и всех, кто хочет проверить последствия городских решений.
+An AI-powered mayor (akim) simulator for teams, urban analysts, and anyone who wants to explore the consequences of city policy decisions.
 
-При ограниченном бюджете полезная инициатива не обязательно делает весь город лучше. QOL-SIM позволяет выбрать **ровно пять мер из 14** для пяти условных районов Астаны, затем разбирает план как шахматную партию: считает Astana Quality of Life Score, вклад каждого решения, место среди всех допустимых планов и лучшие замены. Аналитик объясняет результат и компромиссы на основе расчётов движка.
+With a limited budget, a useful initiative does not necessarily make the whole city better. QOL-SIM lets you choose **exactly five of 14 measures** for five simulated districts of Astana, then reviews the plan like a chess game: it calculates the Astana Quality of Life Score, each decision's contribution, the plan's rank among all valid plans, and the best replacements. An analyst explains the results and trade-offs using the engine's calculations.
 
-![Разбор плана: оценка, районы, вклад мер и рекомендации](docs/images/review.png)
+![Plan review: score, districts, measure contributions, and recommendations](docs/images/review.png)
 
-Публичное демо не развёрнуто. Локальное приложение: [localhost:5173](http://localhost:5173). [История разработки](BUILD_STORY.md), [исходный датасет](docs/data/astana-dataset.md), [план реализации](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [внешние инструменты](docs/EXTERNAL_TOOLS.md).
+No public demo is deployed. Local app: [localhost:5173](http://localhost:5173). [Build story](BUILD_STORY.md), [source dataset](docs/data/astana-dataset.md), [implementation plan](docs/superpowers/plans/2026-09-23-plan-review-simulator.md), [external tools](docs/EXTERNAL_TOOLS.md).
 
-## Запуск за одну команду
+## One-command startup
 
-Нужен Docker с Compose v2. В корне репозитория:
+Requires Docker with Compose v2. From the repository root:
 
 ```sh
 cp .env.example .env
 docker compose up --build --wait --wait-timeout 180
 ```
 
-Откройте [localhost:5173](http://localhost:5173). API: [localhost:3000/api/scenario](http://localhost:3000/api/scenario). При старте API применяет миграции и один раз перебирает пространство планов. PostgreSQL хранит реестр команд и историю заседаний; данные сценария версионированы в коде.
+Open [localhost:5173](http://localhost:5173). API: [localhost:3000/api/scenario](http://localhost:3000/api/scenario). On startup, the API applies migrations and enumerates the plan space once. PostgreSQL stores the team registry and council session history; scenario data is versioned in code.
 
-**Ключ AI не нужен для основного сценария.** С пустым `OPENAI_API_KEY` работают детерминированный офлайн-аналитик и полное заседание совета. При ошибке провайдера, таймауте или некорректном ответе приложение использует шаблон для затронутого ответа и явно показывает его источник.
+**The core flow does not require an AI API key.** With an empty `OPENAI_API_KEY`, the deterministic offline analyst and the full council session still work. If the provider fails, times out, or returns an invalid response, the app uses a template for the affected response and clearly labels its source.
 
 ```sh
-npm run smoke           # Проверка работающего стека; нужен локальный Node
-# Та же проверка без локального Node:
+npm run smoke           # Check the running stack; requires local Node
+# Run the same check without local Node:
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
 docker compose logs -f
-docker compose down     # Останавливает сервисы, сохраняет данные PostgreSQL
+docker compose down     # Stop services and preserve PostgreSQL data
 ```
 
-Compose использует проект `testing-workspace`, привязывает порты к localhost и сохраняет базу в именованном томе. Это окружение разработки с hot reload. После изменения зависимостей или переменных окружения пересоберите контейнеры. Пароль в примере предназначен только для локальной разработки; смена `.env` не меняет пароль уже созданной базы.
+Compose uses the project name `testing-workspace`, binds ports to localhost, and stores the database in a named volume. This is a development environment with hot reload. Rebuild the containers after changing dependencies or environment variables. The example password is for local development only; changing `.env` does not change the password of an existing database.
 
-Для DigitalOcean App Platform запускайте миграции отдельным pre-deploy Job и задайте `POSTGRES_CA_CERT` для проверяемого TLS-соединения с Managed PostgreSQL. [Настройка и команды](docs/DEVELOPMENT.md#digitalocean-app-platform).
+For DigitalOcean App Platform, run migrations in a separate pre-deploy Job and set `POSTGRES_CA_CERT` for a verified TLS connection to Managed PostgreSQL. [Setup and commands](docs/DEVELOPMENT.md#digitalocean-app-platform).
 
-## Демо за две минуты
+## Two-minute demo
 
-При первом открытии появляется обучение **«как это работает»**. Пройдите семь шагов или нажмите **«пропустить»**, чтобы перейти к конструктору.
+The **"how it works"** tutorial appears on the first visit. Complete its seven steps or select **"skip"** to open the plan builder.
 
-1. В конструкторе посмотрите Нуру: школы **38**, медицина **35**, оба значения критические.
-2. Загрузите **план-ловушку** и разберите его: **52.45**, ниже бездействия **52.56**, хотя потрачено **86**. Безопасные переходы в Алматы понижают T1 до **38.25** и вызывают новый штраф.
-3. Загрузите **сильный пример**: школа и поликлиника в Нуре, освещение и камеры в Нуре, цифровая платформа по городу, чистое топливо в Сарыарке. Бюджет **95**, Score **56.54**, место **566 из 694 395**.
-4. Примените предложенную замену **M5 в Сарыарке → M3 в Нуре**: Score **57.21**. Можно раскрыть глобальный оптимум **57.24**.
-5. Прочитайте сильные стороны, риски, последствия и рекомендации. Журнал инструментов показывает вызовы движка, их входы и результаты.
-6. Отправьте план с названием команды в реестр. В таблице остаётся лучший результат каждой команды; Score и ранг сервер рассчитывает заново.
+1. In the builder, inspect Nura: schools **38**, healthcare **35**, both critically low.
+2. Load the **trap plan** and review it: **52.45**, below the do-nothing baseline of **52.56**, despite spending **86**. Safe crossings in Almaty district lower T1 to **38.25** and trigger a new penalty.
+3. Load the **strong example**: a school and clinic in Nura, lighting and cameras in Nura, a citywide digital platform, and clean fuel in Saryarka. Budget **95**, Score **56.54**, rank **566 out of 694,395**.
+4. Apply the suggested replacement **M5 in Saryarka → M3 in Nura**: Score **57.21**. You can also reveal the global optimum of **57.24**.
+5. Read the strengths, risks, consequences, and recommendations. The tool log shows engine calls, their inputs, and their results.
+6. Submit the plan to the registry under your team's name. The table keeps each team's best result; the server recalculates the Score and rank.
 
-## Обучение «как это работает»
+## "How it works" tutorial
 
-![Онбординг: от плана к расчёту и объяснению](docs/images/onboarding.png)
+![Onboarding: from a plan to calculations and explanations](docs/images/onboarding.png)
 
-Семь шагов объясняют бюджет и выбор мер, районы и провалы, правила плана, лаг, итоговый балл, положительный и отрицательный примеры и экран результатов. Лаг можно переключать от 0 до 4: меняются восемь кварталов на шкале и учебный эффект школы. В примерах переключаются школа в Нуре и переходы в Алматы, а в последнем шаге раскрываются термины — процентиль, КПД, вклад и оценка меры, синергия.
+Seven steps explain the budget and measure selection, districts and critical shortfalls, plan rules, implementation lag, the final score, positive and negative examples, and the results screen. You can adjust the lag from 0 to 4: the eight-quarter timeline and the school's illustrative effect update accordingly. The examples let you switch between a school in Nura and crossings in Almaty, while the final step expands definitions of percentile, efficiency, contribution, measure rating, and synergy.
 
-Кнопки «назад / далее» и точки переключают шаги. «Пропустить», ×, Escape и «собрать план →» закрывают обучение. Ссылка **[?] как это работает** в шапке возвращает к нему с первого шага, сохраняя текущий план. Закрытие запоминается в этом браузере (`localStorage`); если хранилище недоступно, приложение продолжает работать, но обучение появится снова после перезагрузки. Диалог поддерживает клавиатуру, возвращает фокус к кнопке открытия и адаптируется к мобильному экрану.
+The "back / next" buttons and navigation dots switch between steps. "Skip", ×, Escape, and "build a plan →" close the tutorial. The **[?] how it works** link in the header reopens it at the first step while preserving the current plan. Dismissal is remembered in this browser (`localStorage`); if storage is unavailable, the app keeps working, but the tutorial appears again after a reload. The dialog supports keyboard navigation, returns focus to its trigger button, and adapts to mobile screens.
 
-Числа в обучении — примеры сценария `astana-v1`, а не предварительный расчёт выбранного плана. Прирост сильного примера показан как **+3.99**, в соответствии с движком и его округлением. Учебный переключатель лага не меняет каталог и план.
+The tutorial's numbers are examples from the `astana-v1` scenario, not a preliminary calculation of the selected plan. The strong example's gain is shown as **+3.99**, matching the engine and its rounding. The tutorial's lag control does not change the catalog or the plan.
 
-## Совет при акиме
+## Mayor's council
 
-Из готового разбора нажмите **«вынести на совет»**, затем **«начать заседание»**. Семь вымышленных участников обсуждают план, предлагают допустимые замены и голосуют по проверенной рекомендации председателя. Это учебные персонажи, только должности; данные синтетические.
+From a completed review, select **"bring to council"**, then **"start session"**. Seven fictional participants discuss the plan, propose valid replacements, and vote on the chair's verified recommendation. These are educational characters identified only by their roles; the data is synthetic.
 
-![Совет: круглый стол и проверенные выступления](docs/images/council.png)
+![Council: roundtable and validated statements](docs/images/council.png)
 
-| Участник            | Слагаемое и метрика                                         |
-| ------------------- | ----------------------------------------------------------- |
-| Транспорт           | T1, T2 · вес 0.20; взвешенный вклад в средний балл города   |
-| Экология            | E1, E2 · 0.20; тот же вклад                                 |
-| Социальная сфера    | S1, S2 · 0.22; тот же вклад                                 |
-| Безопасность        | B1, B2 · 0.18; тот же вклад                                 |
-| Городское хозяйство | C1, C2 · 0.20; тот же вклад                                 |
-| Омбудсмен           | Худший район минус число критических значений               |
-| Финансы             | Прирост Score относительно бездействия на 10 единиц бюджета |
-| Председатель        | Итоговый Score, допустимость и цена компромиссов            |
+| Participant        | Score component and metric                                            |
+| ------------------ | --------------------------------------------------------------------- |
+| Transport          | T1, T2 · weight 0.20; weighted contribution to the city average score |
+| Environment        | E1, E2 · 0.20; the same contribution metric                           |
+| Social services    | S1, S2 · 0.22; the same contribution metric                           |
+| Safety             | B1, B2 · 0.18; the same contribution metric                           |
+| Municipal services | C1, C2 · 0.20; the same contribution metric                           |
+| Ombudsman          | Lowest district score minus the number of critically low values       |
+| Finance            | Score gain over the do-nothing baseline per 10 budget units           |
+| Chair              | Final Score, validity, and the cost of trade-offs                     |
 
-Сумма пяти вкладов направлений равна среднему баллу города. Движок определяет позиции, до трёх кандидатов каждому участнику, последствия замен, возражения и голоса. LLM пишет реплики; числа и ID проверяются по разрешённым фактам. Проверка числовых литералов не доказывает семантическую истинность произвольного текста: журнал расчётов доступен вместе с репликами.
+The five sector contributions add up to the city average score. The engine determines positions, up to three candidates for each participant, replacement impacts, objections, and votes. The LLM writes the dialogue; numbers and IDs are checked against the allowed facts. Validating numeric literals does not establish the semantic truth of arbitrary text: the calculation log is available alongside the dialogue.
 
 ```text
-Брифы движка → семь параллельных выступлений → проверка каждой реплики
-→ предложенные поправки → до двух возражений → ответ автора
-→ председатель: evaluate_package / get_amendment_impacts, до четырёх шагов
-→ только проверенная рекомендация → голосование → сохранённый протокол
-→ принять поправку или пакет → изменённый план → новый разбор
+Engine briefs → seven parallel statements → validation of each statement
+→ proposed amendments → up to two objections → the author's response
+→ chair: evaluate_package / get_amendment_impacts, up to four steps
+→ verified recommendation only → vote → saved minutes
+→ accept an amendment or package → updated plan → new review
 ```
 
-Неверный ID, неподтверждённое число, некорректный JSON или таймаут заменяют только соответствующую реплику шаблоном. При сбое председателя протокол собирается из проверенных движком вариантов. Без ключа все этапы работают на шаблонах с теми же событиями. Источник реплик и протокола отмечен в интерфейсе; отключение браузера не останавливает заседание на сервере.
+An invalid ID, unsupported number, malformed JSON, or timeout replaces only the affected statement with a template. If the chair fails, the minutes are assembled from engine-verified options. Without a key, every stage uses templates with the same events. The interface labels the source of the dialogue and minutes; disconnecting the browser does not stop the session on the server.
 
-PostgreSQL хранит исходный план, события и протокол. SSE публикует события после записи, повторное подключение продолжает историю по ID события. Сохранённое заседание можно открыть и воспроизвести. После перезапуска API незавершённая сессия отмечается прерванной; завершённые протоколы сохраняются. Локальный стек рассчитан на один API-процесс.
+PostgreSQL stores the original plan, events, and minutes. SSE publishes events after they are saved; reconnection resumes the history from the event ID. Saved sessions can be opened and replayed. After an API restart, an unfinished session is marked as interrupted; completed minutes remain available. The local stack is designed for a single API process.
 
-**Демо за минуту:** сильный пример → совет → сравните ЛРТ в Нуре и Есиле → возражение экологии → отклонённый пакет стоимостью 104 → голосование → принять ЛРТ в Нуре → новый Score **57.21**. Числа вычисляет движок, макеты не служат источником вычислений.
+**One-minute demo:** strong example → council → compare light rail transit (LRT) in Nura and Esil → environmental objection → rejected package costing 104 → vote → accept LRT in Nura → new Score **57.21**. The engine calculates the numbers; mockups are not a source of calculations.
 
-Уточнение исходного плана и макетов: замена **M10@Нура → M14** даёт **56.62718 → 56.63**, прирост **0.08411 → +0.08**. Значение 56.64 в референсе было неточным. Эталон ЛРТ в Нуре — **57.20556 → 57.21**, изменение **+0.66249 → +0.66**; голосование — **5 за / 1 воздержался / 1 против**.
+Clarification of the original plan and mockups: replacing **M10@Nura → M14** gives **56.62718 → 56.63**, a gain of **0.08411 → +0.08**. The reference value of 56.64 was inaccurate. The benchmark for LRT in Nura is **57.20556 → 57.21**, a change of **+0.66249 → +0.66**; the vote is **5 in favor / 1 abstention / 1 against**.
 
-### Подключение OpenAI
+### Connecting OpenAI
 
-В корневом `.env` укажите ключ, когда он будет готов:
+Add your key to the root `.env` when it is ready:
 
 ```dotenv
-OPENAI_API_KEY=ваш_ключ_из_platform.openai.com
+OPENAI_API_KEY=your_key_from_platform.openai.com
 AI_MODEL=gpt-4.1-mini
 AI_COUNCIL_MODEL=gpt-4.1-mini
 AI_TIMEOUT_MS=25000
 AI_COUNCIL_TIMEOUT_MS=12000
 ```
 
-После изменения `.env` перезапустите локальный API или выполните `docker compose up -d --build api`. Пустой `AI_COUNCIL_MODEL` использует `AI_MODEL`. Ключ читает только сервер; переменных `VITE_` для него нет. Доступность выбранной модели зависит от вашего OpenAI-проекта. Интеграция проверяется детерминированными ответами провайдера и офлайн-режимом; вызовы с настоящим ключом не проверены.
+After changing `.env`, restart the local API or run `docker compose up -d --build api`. An empty `AI_COUNCIL_MODEL` falls back to `AI_MODEL`. Only the server reads the key; there are no `VITE_` variables for it. Availability of the selected model depends on your OpenAI project. The integration is tested with deterministic provider responses and offline mode; calls using a real key have not been verified.
 
-## Как считается результат
+## How results are calculated
 
-Данные **синтетические**, границы на карте **схематические**. Симулятор объясняет заданную модель, а не прогнозирует реальную городскую экономику.
+The data is **synthetic**, and the map boundaries are **schematic**. The simulator explains the defined model rather than forecasting the real urban economy.
 
 ```text
-Реализованный эффект = полный эффект × (8 − лаг) / 8
-I'[район, показатель] = clip(исходное значение + эффекты + синергии, 0, 100)
-D[район] = Σ вес[показатель] × I'[район, показатель]
-D_avg = Σ доля_населения[район] × D[район]
+Realized effect = full effect × (8 − lag) / 8
+I'[district, indicator] = clip(baseline value + effects + synergies, 0, 100)
+D[district] = Σ weight[indicator] × I'[district, indicator]
+D_avg = Σ population_share[district] × D[district]
 Score = 0.7 × D_avg + 0.3 × min(D) − N_crit
-N_crit = число значений строго ниже 40
+N_crit = number of values strictly below 40
 ```
 
-Горизонт — восемь кварталов. Синергии фиксированы и лагом не масштабируются. Неизрасходованный бюджет не даёт бонуса. Внутри движка сохраняется полная точность; HTTP-ответы и интерфейс округляют значения для отображения. Ранги определяются по неокруглённым значениям, равные результаты делят место.
+The horizon is eight quarters. Synergies are fixed and are not scaled by lag. Unspent budget earns no bonus. The engine retains full precision internally; HTTP responses and the interface round values for display. Ranks use unrounded values, and tied results share a rank.
 
-Правила: ровно пять разных мер, стоимость не больше 100, максимум две меры одного направления, район обязателен для районных мер и запрещён для городских. M1 и M3 несовместимы в любом районе; M4/M7 и M5/M13 несовместимы в одном районе. Все пять направлений доступны, но обязательного охвата всех пяти нет: это ограничение отсутствует в датасете.
+Rules: exactly five distinct measures, total cost no greater than 100, at most two measures per sector, and a district required for district-level measures but forbidden for citywide measures. M1 and M3 are incompatible regardless of district; M4/M7 and M5/M13 are incompatible within the same district. All five sectors are available, but covering all five is not mandatory: the dataset contains no such constraint.
 
-Изменение Score рассчитывается до округления: у примера это **3.98539**, отображается **+3.99**. Разность уже округлённых 56.54 и 52.56 равна 3.98; поэтому клиент получает отдельное рассчитанное движком поле `scoreDelta`.
+The Score change is calculated before rounding: for the example, it is **3.98539**, displayed as **+3.99**. Subtracting the already rounded values 56.54 and 52.56 gives 3.98, so the client receives a separate engine-calculated `scoreDelta` field.
 
-**Вклад каждого хода — точное значение Шепли** по всем подмножествам плана. Сумма вкладов равна изменению Score относительно бездействия. Оценка хода учитывает лучшую допустимую одиночную замену:
+**Each move's contribution is its exact Shapley value** across all subsets of the plan. The contributions add up to the Score change from the do-nothing baseline. A move's rating accounts for the best valid single replacement:
 
-| Оценка                    | Правило                                                                            |
-| ------------------------- | ---------------------------------------------------------------------------------- |
-| Грубая ошибка (`blunder`) | Вклад отрицательный                                                                |
-| Ошибка (`mistake`)        | Лучшая замена даёт ≥ 1.0                                                           |
-| Неточность (`inaccuracy`) | Лучшая замена даёт ≥ 0.3                                                           |
-| Хороший (`good`)          | Лучшая замена даёт > 0.05                                                          |
-| Лучший (`best`)           | Улучшение заменой не превышает 0.05                                                |
-| Ключевой (`brilliant`)    | `best`, а удаление меры возвращает критическое значение или мера включает синергию |
+| Rating                    | Rule                                                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Blunder (`blunder`)       | Negative contribution                                                                                      |
+| Mistake (`mistake`)       | Best replacement gains ≥ 1.0                                                                               |
+| Inaccuracy (`inaccuracy`) | Best replacement gains ≥ 0.3                                                                               |
+| Good (`good`)             | Best replacement gains > 0.05                                                                              |
+| Best (`best`)             | Replacement improves the score by no more than 0.05                                                        |
+| Brilliant (`brilliant`)   | Rated `best`, with either removal bringing back a critically low value or the measure activating a synergy |
 
-КПД = `(Score − базовый Score) / (оптимум − базовый Score) × 100%`; у вредного плана может быть отрицательным. Процентиль отражает положение в полном пространстве допустимых планов. Гистограмма построена по этим же результатам с шагом 0.25.
+Efficiency = `(Score − baseline Score) / (optimum − baseline Score) × 100%`; it can be negative for a harmful plan. Percentile reflects the plan's position in the full space of valid plans. The histogram uses the same results with a bin width of 0.25.
 
-## Эталонные проверки
+## Benchmark checks
 
-`npm test` проверяет числа из исходного сценария без сетевых запросов или базы:
+`npm test` verifies the source scenario's numbers without network requests or a database:
 
-| Проверка                      | Результат                                            |
-| ----------------------------- | ---------------------------------------------------- |
-| Бездействие                   | 52.56, два критических значения в Нуре               |
-| Сильный пример                | 56.54; бюджет 95; критических значений 0             |
-| Число допустимых планов       | 694 395                                              |
-| Оптимум                       | 57.24; M2, M3@Нура, M8@Нура, M9@Нура, M14; бюджет 98 |
-| Худший допустимый план        | 52.04                                                |
-| Планов хуже бездействия       | 20 003                                               |
-| Место примера                 | 566; процентиль 99.9; КПД около 85%                  |
-| Вклады примера                | 1.45, 1.40, 0.49, 0.47, 0.17; точная сумма 3.98539   |
-| Лучшая замена в примере       | M5@Сарыарка → M3@Нура; 57.21, прирост 0.66           |
-| План-ловушка                  | 52.45; бюджет 86; вклад M11@Алматы −0.87             |
-| Лучший охват пяти направлений | 56.34                                                |
+| Check                               | Result                                               |
+| ----------------------------------- | ---------------------------------------------------- |
+| Do nothing                          | 52.56, two critically low values in Nura             |
+| Strong example                      | 56.54; budget 95; 0 critically low values            |
+| Number of valid plans               | 694,395                                              |
+| Optimum                             | 57.24; M2, M3@Nura, M8@Nura, M9@Nura, M14; budget 98 |
+| Worst valid plan                    | 52.04                                                |
+| Plans worse than doing nothing      | 20,003                                               |
+| Example's rank                      | 566; percentile 99.9; efficiency about 85%           |
+| Example's contributions             | 1.45, 1.40, 0.49, 0.47, 0.17; exact sum 3.98539      |
+| Example's best replacement          | M5@Saryarka → M3@Nura; 57.21, gain 0.66              |
+| Trap plan                           | 52.45; budget 86; M11@Almaty contribution −0.87      |
+| Best plan covering all five sectors | 56.34                                                |
 
-## Архитектура
+<a id="архитектура"></a>
+
+## Architecture
 
 ```text
 React / Vite → same-origin /api proxy → NestJS
-                                          ├─ SimulationService → чистый TypeScript-движок
-                                          │    ├─ версия astana-v1, правила, Score
-                                          │    └─ полный перебор, Шепли, замены, оценки ходов
-                                          ├─ AnalysisService → инструменты движка → OpenAI
-                                          │    └─ офлайн-аналитик при отсутствии ключа/ошибке
-                                          ├─ CouncilService → брифы → OpenAI / шаблоны → протокол
-                                          │    └─ PostgreSQL jsonb → история / SSE → React
+                                          ├─ SimulationService → pure TypeScript engine
+                                          │    ├─ astana-v1 version, rules, Score
+                                          │    └─ exhaustive search, Shapley values, replacements, move ratings
+                                          ├─ AnalysisService → engine tools → OpenAI
+                                          │    └─ offline analyst when the key is missing or an error occurs
+                                          ├─ CouncilService → briefs → OpenAI / templates → minutes
+                                          │    └─ PostgreSQL jsonb → history / SSE → React
                                           └─ SubmissionsService → TypeORM → PostgreSQL
 ```
 
-Стек: React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, TypeScript 5.9, Vitest, ESLint и Prettier. OpenAI вызывается через стандартный серверный `fetch`; визуализации используют SVG и CSS.
+Stack: React 19, Vite 8, NestJS 12, TypeORM 0.3, PostgreSQL 17, TypeScript 5.9, Vitest, ESLint, and Prettier. OpenAI is called through standard server-side `fetch`; visualizations use SVG and CSS.
 
-- `apps/api/src/simulation/engine`: данные, валидация, формула, полный перебор, точные вклады и лучшие замены. Без Nest и базы.
-- `apps/api/src/simulation`: HTTP-парсер и сервис, формирующий Review. Невалидный план не получает Score.
-- `apps/api/src/analysis`: адаптер LLM, ограниченный цикл инструментов, проверка JSON и офлайн-объяснения. HTTP-адаптер изолирован в `llm-client.ts`.
-- `apps/api/src/submissions`: серверный пересчёт результатов и сохранение планов.
-- `apps/api/src/council`: метрики, брифы, поправки, агенты, голосование, поток и сохранение заседания.
-- `apps/web/src/features`: конструктор, разбор, совет, реестр и обучение (`onboarding`). Браузер не реализует формулу Score; переключатель лага считает только учебный пример.
-- `apps/*/tests`: тесты поведения, структура которых повторяет исходники.
+- `apps/api/src/simulation/engine`: data, validation, scoring formula, exhaustive search, exact contributions, and best replacements. No Nest or database dependency.
+- `apps/api/src/simulation`: HTTP parser and service that assembles the Review. Invalid plans do not receive a Score.
+- `apps/api/src/analysis`: LLM adapter, bounded tool loop, JSON validation, and offline explanations. The HTTP adapter is isolated in `llm-client.ts`.
+- `apps/api/src/submissions`: server-side recalculation of results and plan persistence.
+- `apps/api/src/council`: metrics, briefs, amendments, agents, voting, streaming, and session persistence.
+- `apps/web/src/features`: builder, review, council, registry, and tutorial (`onboarding`). The browser does not implement the Score formula; the lag control calculates only the tutorial example.
+- `apps/*/tests`: behavior tests whose structure mirrors the source files.
 
-Агент использует `evaluate_plan`, `explain_contributions`, `get_rank`, `find_best_swaps`, `evaluate_alternative`. Лимит — шесть шагов, общий срок по умолчанию 25 секунд. Числа и допустимые альтернативы берутся из инструментов. Финальный ответ проходит проверку структуры. Дополнительная проверка отклоняет числовые литералы, отсутствующие в результатах инструментов (с учётом округления). Она не проверяет, относится ли число к верному району или утверждению; это не полная семантическая проверка. Офлайн-разбор непосредственно форматирует результаты движка.
+The agent uses `evaluate_plan`, `explain_contributions`, `get_rank`, `find_best_swaps`, and `evaluate_alternative`. It is limited to six steps, with an overall timeout of 25 seconds by default. Numbers and valid alternatives come from the tools. The final response is checked for structural validity. An additional check rejects numeric literals absent from the tool results, allowing for rounding. It does not verify whether a number refers to the correct district or claim; this is not full semantic validation. The offline review formats engine results directly.
 
-Реестр открытый, без аутентификации: название команды — метка, а не защищённая учётная запись. Имена сравниваются без учёта регистра. Сохраняется история отправок, в таблицу попадает лучший результат каждой команды; при равном Score выбирается более ранняя отправка.
+The registry is public and has no authentication: a team name is a label, not a protected account. Names are compared case-insensitively. Submission history is retained, and the table shows each team's best result; when Scores are equal, the earlier submission wins.
 
-## Соответствие кейсу
+## Challenge requirements
 
-Разметку требований положения и подтверждающих материалов ведём в [плане версии 0.1](docs/compliance/PLAN.md) и [первичной карте требований](docs/compliance/RULES_MAP.md). Они **в работе**: детализация и итоговое отражение в README продолжаются, полное соответствие пока не заявлено.
+We track the challenge's requirements and supporting evidence in the [version 0.1 plan](docs/compliance/PLAN.md) and the [initial requirements map](docs/compliance/RULES_MAP.md). These are **works in progress**: further detail and final README coverage are still being developed, and full compliance is not yet claimed.
 
-| Требование / критерий                          | Реализация                                                              | Проверка                                                                 |
-| ---------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Единый бюджет и данные; критерий 1             | `simulation/engine/scenario.ts`, `/api/scenario`                        | `simulation/engine/scoring.test.ts`, `simulation/simulation.test.ts`     |
-| Решения по пяти направлениям                   | Каталог 14 мер, фильтры конструктора                                    | `simulation/engine/scoring.test.ts`, `features/Builder.test.tsx`         |
-| Контроль бюджета; критерий 2                   | `validation.ts`, серверный запрет разбора                               | `simulation/engine/scoring.test.ts`, `simulation/simulation.test.ts`     |
-| Меры изменяют показатели; критерий 3           | `scoring.ts`, лаги и синергии                                           | `simulation/engine/scoring.test.ts`                                      |
-| Расчёт Astana Quality of Life Score            | `scoring.ts`, `landscape.ts`                                            | `simulation/engine/review.test.ts`, `scripts/smoke.mjs`                  |
-| AI-анализ и понятные компромиссы; критерий 4   | `analysis/analyst-agent.ts`, `offline-analyst.ts`                       | `analysis/analyst-agent.test.ts`, `analysis/offline-analyst.test.ts`     |
-| Протокол и цена компромиссов; критерий 4       | Совет при акиме, особые мнения и голосование                            | `council/agents.test.ts`, `council/domain-numerics.test.ts`              |
-| AI-рекомендации по улучшению                   | Проверенные поправки и пакеты совета                                    | `council/domain.test.ts`, `e2e/council.spec.ts`                          |
-| Техническая реализация: агенты с инструментами | Параллельные выступления, ограниченный председатель, сохранённый журнал | `council/agents.test.ts`, `council/sessions.test.ts`                     |
-| Сильные стороны, риски, последствия            | Структурированный отчёт аналитика                                       | `analysis/offline-analyst.test.ts`, `features/Review.test.tsx`           |
-| Изменение плана меняет Score; критерий 5       | `swaps.ts`, повторный разбор после замены                               | `simulation/engine/review.test.ts`, `scripts/smoke.mjs`                  |
-| Сравнение команд                               | PostgreSQL, `submissions.service.ts`                                    | `submissions/submission.test.ts`                                         |
-| Визуализация изменений                         | Карта, таблица показателей, гистограмма                                 | `components/Map.test.tsx`, `features/Review.test.tsx`; браузерный прогон |
+| Requirement / criterion                          | Implementation                                      | Verification                                                            |
+| ------------------------------------------------ | --------------------------------------------------- | ----------------------------------------------------------------------- |
+| Shared budget and data; criterion 1              | `simulation/engine/scenario.ts`, `/api/scenario`    | `simulation/engine/scoring.test.ts`, `simulation/simulation.test.ts`    |
+| Decisions across five sectors                    | Catalog of 14 measures, builder filters             | `simulation/engine/scoring.test.ts`, `features/Builder.test.tsx`        |
+| Budget control; criterion 2                      | `validation.ts`, server-side rejection of reviews   | `simulation/engine/scoring.test.ts`, `simulation/simulation.test.ts`    |
+| Measures change indicators; criterion 3          | `scoring.ts`, lags and synergies                    | `simulation/engine/scoring.test.ts`                                     |
+| Astana Quality of Life Score calculation         | `scoring.ts`, `landscape.ts`                        | `simulation/engine/review.test.ts`, `scripts/smoke.mjs`                 |
+| AI analysis and clear trade-offs; criterion 4    | `analysis/analyst-agent.ts`, `offline-analyst.ts`   | `analysis/analyst-agent.test.ts`, `analysis/offline-analyst.test.ts`    |
+| Minutes and the cost of trade-offs; criterion 4  | Mayor's council, dissenting opinions, and voting    | `council/agents.test.ts`, `council/domain-numerics.test.ts`             |
+| AI recommendations for improvement               | Verified council amendments and packages            | `council/domain.test.ts`, `e2e/council.spec.ts`                         |
+| Technical implementation: agents with tools      | Parallel statements, bounded chair agent, saved log | `council/agents.test.ts`, `council/sessions.test.ts`                    |
+| Strengths, risks, consequences                   | Structured analyst report                           | `analysis/offline-analyst.test.ts`, `features/Review.test.tsx`          |
+| Changing the plan changes the Score; criterion 5 | `swaps.ts`, a new review after replacement          | `simulation/engine/review.test.ts`, `scripts/smoke.mjs`                 |
+| Team comparison                                  | PostgreSQL, `submissions.service.ts`                | `submissions/submission.test.ts`                                        |
+| Visualization of changes                         | Map, indicator table, histogram                     | `components/Map.test.tsx`, `features/Review.test.tsx`; browser test run |
 
-Пути backend-тестов относительно `apps/api/tests`, frontend-тестов — `apps/web/tests`. Точные команды запуска приведены в [руководстве разработчика](docs/DEVELOPMENT.md).
+Backend test paths are relative to `apps/api/tests`; frontend test paths are relative to `apps/web/tests`. Exact commands are in the [developer guide](docs/DEVELOPMENT.md).
 
 ## Roadmap
 
-- Неожиданные события города и перераспределение бюджета.
-- NPC-соперники и сравнение позиций между заседаниями.
-- Турнир по кварталам и сравнение последовательностей решений.
-- Проверка каждого численного утверждения LLM по результатам инструментов.
-- Авторизация команд, лимиты запросов и конфигурация публичного развёртывания.
+- Unexpected city events and budget reallocation.
+- NPC rivals and comparisons of their positions between sessions.
+- A quarter-by-quarter tournament and comparisons of decision sequences.
+- Verification of every numerical LLM claim against tool results.
+- Team authentication, rate limits, and public deployment configuration.
 
-Подробные команды локальной разработки, переменные окружения, HTTP API и миграции — в [руководстве разработчика](docs/DEVELOPMENT.md).
+See the [developer guide](docs/DEVELOPMENT.md) for detailed local development commands, environment variables, the HTTP API, and migrations.
