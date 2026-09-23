@@ -221,6 +221,16 @@ We track the challenge's requirements and supporting evidence in the [version 0.
 
 Backend test paths are relative to `apps/api/tests`; frontend test paths are relative to `apps/web/tests`. Exact commands are in the [developer guide](docs/DEVELOPMENT.md).
 
+## Limitations
+
+- **A simplified city model.** The five districts, 14 measures, effects, and map are synthetic or schematic. Scores describe the fixed `astana-v1` scenario; they are not forecasts based on live city data.
+- **One planning round.** Each plan contains five measures evaluated over a fixed eight-quarter horizon. There are no unexpected city events, quarter-by-quarter budget changes, or NPC opponents yet.
+- **AI explanations are only partly verified.** The engine calculates scores and checks proposed plans. Text validation rejects unsupported numbers and IDs, but cannot guarantee that every sentence interprets those facts correctly. The calculation log is available for inspection.
+- **Generated dialogue depends on OpenAI.** Without an API key, or when a provider response fails validation or times out, the affected explanation uses a labelled template. Scoring and the council flow still work, but the fallback does not generate new dialogue.
+- **No protected team accounts.** Team names are public labels, so another person can submit under the same name. The application does not implement authentication or request rate limits.
+- **Council sessions require one API process.** Live meetings are managed in server memory, with events saved to PostgreSQL. A server restart interrupts unfinished meetings; saved events and completed minutes remain available. There is no distributed worker to resume a meeting or coordinate multiple API instances.
+- **Verification has a limited scope.** Automated OpenAI tests use fake provider responses, and browser tests run in Chromium with AI disabled. These checks do not establish live model quality or Firefox and Safari compatibility.
+
 ## Roadmap
 
 - Unexpected city events and budget reallocation.
