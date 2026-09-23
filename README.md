@@ -14,6 +14,24 @@ Try the deployed app: [QOL-SIM](https://hackalem.cedra.team/).
 
 [Watch the demo video](https://drive.google.com/file/d/1oXhBEGuC_Tg0gTjOR1tAu-iqICBbg92n/view?usp=sharing).
 
+## Five hours. Three people. Four messages.
+
+We wanted to leave with a simulator people could try and a reason for someone outside the hackathon to open it. We started looking for those people while the app was still being built.
+
+**Sayazhan built the application.** He explored interface designs, challenged implementation choices, picked the features and worked through them with Codex. He owned the main repository.
+
+**Dos worked out what to build and whom to show it to.** He researched the case, shaped the product logic, found contacts and prepared the outreach workflow.
+
+**Margulan kept the build connected to that search.** He found design references, worked with Sayazhan on the user flow, filmed the team, kept the log and sent the messages. We made product decisions together and wrote this account together.
+
+One plan did not make the cut: a separate agent-orchestration extension. We ran out of time to integrate it and dropped it from this submission. It is not part of the delivered product.
+
+By the end of the build, we had sent four messages asking for expert feedback or offering the simulator as a training exercise. The [outreach log](#outreach-for-adoption) records the recipients and proposals. No replies are confirmed in the latest log. Our next step is to show the working scenario, ask where the model gets things wrong, and find out whether it belongs in a classroom for public officials.
+
+> **Watch the five hours behind the demo.** See the team working through screens, building the app and reaching out to people who might use it—all during the same build window.
+>
+> **Build and outreach video diary — Google Drive link to be added.**
+
 ## Doc files
 
 - [Build story](docs/BUILD_STORY.md) — The hackathon development timeline, including product decisions, implementation milestones, and lessons from testing.
