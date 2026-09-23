@@ -92,7 +92,7 @@ The smoke command checks direct API health, the Vite proxy, page serving, and th
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
 ```
 
-CI runs formatting, typechecking, unit coverage, builds, and a real Compose smoke/migration check on pull requests and pushes to `main`.
+CI runs formatting, typechecking, unit coverage, builds, Playwright browser tests, and a real Compose smoke/migration check on pull requests and pushes to `main`.
 
 ### Browser end-to-end tests
 
@@ -119,7 +119,7 @@ npm run test:e2e -- --repeat-each=3 # Check repeatability
 
 Tests use isolated browser contexts, accessible role locators, and condition-based assertions rather than fixed sleeps. Retries are disabled so failures remain visible. Chromium is the supported browser target; Firefox and WebKit are not covered. `npm test` and `npm run check` remain service-free unit/static checks; run `npm run test:e2e` separately for browser verification. Both the Playwright config and tests are included in `npm run typecheck`.
 
-The HTML report and failure screenshots/traces are gitignored under `playwright-report/` and `test-results/`; a failed test's trace can be opened from the HTML report.
+The CI `e2e` job starts a separate PostgreSQL Compose project, installs Chromium with its system dependencies, runs the same command, and always tears down its test database volume. It uploads the HTML report plus failure screenshots/traces for seven days. Locally these generated files are gitignored under `playwright-report/` and `test-results/`; a failed test's trace can be opened from the HTML report.
 
 Additional useful commands:
 
