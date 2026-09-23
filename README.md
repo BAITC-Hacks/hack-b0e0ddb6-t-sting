@@ -130,7 +130,7 @@ React / Vite → same-origin /api proxy → NestJS
 | Сравнение команд                             | PostgreSQL, `submissions.service.ts`              | `submissions/submission.test.ts`                                         |
 | Визуализация изменений                       | Карта, таблица показателей, гистограмма           | `components/Map.test.tsx`, `features/Review.test.tsx`; браузерный прогон |
 
-Пути backend-тестов относительно `apps/api/tests`, frontend-тестов — `apps/web/tests`. Точные команды запуска приведены ниже.
+Пути backend-тестов относительно `apps/api/tests`, frontend-тестов — `apps/web/tests`. Точные команды запуска приведены в [руководстве разработчика](docs/DEVELOPMENT.md).
 
 ## Roadmap
 

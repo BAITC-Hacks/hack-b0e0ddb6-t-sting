@@ -34,4 +34,6 @@ The product contains more report text and a full indicator table than the conden
 
 Verified in Chrome: scenario loading, example/trap selection, review scores 56.54 and 52.45, replacement to 57.21, optimum dialog 57.24, offline analyst, persisted leaderboard result at rank 3, and navigation after saving. No relevant browser console errors or runtime overlays occurred in the final flow. Smoke checks also cover the API proxy, PostgreSQL, invalid-plan rejection and computed ranking.
 
+The committed Playwright suite passes all nine Chromium tests, including the full review/save/reload flow, mobile widths, keyboard focus, and injected service failures. `npm run check` passes with 263 unit tests and 100% line and branch coverage. An isolated Docker stack started against an empty database, applied the migration automatically, and passed the full smoke command; its temporary volume was removed afterward.
+
 Live LLM-provider access was not exercised without a real API key. Provider tool calls, timeout, malformed replies and fallback are covered by deterministic unit tests. The numerical-literal guard is not a semantic fact checker.

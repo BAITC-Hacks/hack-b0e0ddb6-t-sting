@@ -1,4 +1,4 @@
-name: Verify scaffold
+name: Verify QOL-SIM
 
 on:
   pull_request:
@@ -49,6 +49,38 @@ jobs:
       - run: npm install --global npm@10
       - run: npm ci
       - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm install --global npm@10
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: cp .env.example .env
+      - run: docker compose -p testing-e2e up -d --wait db
+      - run: npm run test:e2e
+      - name: Show database logs on failure
+        if: failure()
+        run: docker compose -p testing-e2e logs --no-color db
+      - name: Upload browser test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Stop isolated test database
+        if: always()
+        run: docker compose -p testing-e2e down --volumes
 
   integration:
     runs-on: ubuntu-latest
