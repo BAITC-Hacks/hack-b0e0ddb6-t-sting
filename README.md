@@ -137,6 +137,8 @@ N_crit = число значений строго ниже 40
 
 ## Эталонные проверки
 
+GitHub Actions workflows проверяются командой `npm run lint:workflows`, которая также входит в `npm run check`. Проверка загружает закреплённую версию actionlint с GitHub и требует сети; [зависимости и команды](docs/DEVELOPMENT.md#commands-and-validation).
+
 `npm test` проверяет числа из исходного сценария без сетевых запросов или базы:
 
 | Проверка                      | Результат                                            |

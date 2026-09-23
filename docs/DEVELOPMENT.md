@@ -59,6 +59,7 @@ If a port is occupied, change it in `.env`. For local Node development, update `
 ```sh
 npm run check        # Lint, formatting, typecheck, coverage tests, builds
 npm run lint         # Check application, test, script, and config code
+npm run lint:workflows # Check all GitHub Actions workflows with actionlint
 npm run lint:fix     # Apply safe ESLint fixes; report remaining issues
 npm run format:check # Check maintained project file formatting
 npm test             # Isolated unit tests with enforced coverage
@@ -68,6 +69,8 @@ npm run format       # Format maintained project files
 ```
 
 ESLint uses the recommended JavaScript, TypeScript, and React Hooks rules. Prettier owns formatting, with `eslint-config-prettier` disabling conflicting lint rules. Lint warnings fail checks. Run `npm run lint:fix` and `npm run format` to apply fixes, then `npm run check` before opening a pull request.
+
+`npm run lint:workflows` runs actionlint **1.7.12** using its [official download script](https://github.com/rhysd/actionlint/blob/v1.7.12/docs/install.md#download-script). Both the installer and binary version are pinned in `scripts/lint-workflows.sh`. On macOS or Linux, it requires Bash, curl, tar, and network access to GitHub; each run downloads to a temporary directory and removes it on exit. No global install or Docker daemon is needed. With no arguments, actionlint discovers all repository workflows, including `.yml` and `.yaml` files. To check a specific file, run `npm run lint:workflows -- .github/workflows/ci.yml`. Optional ShellCheck and Pyflakes integrations are disabled explicitly so local and CI validation do not vary with host-installed tools; embedded shell/Python linting is outside this command's scope.
 
 Generated dependencies, builds, and coverage output are ignored. Both tools leave `.agents/` and `.claude/` untouched to preserve vendored skill contents; Prettier also preserves `AGENTS.md` and `CLAUDE.md`. Validate skill synchronization with `diff -qr .agents/skills .claude/skills`.
 
@@ -92,7 +95,7 @@ The smoke command checks health, the Vite proxy, page serving, the scenario, val
 docker compose exec -T web node scripts/smoke.mjs http://localhost:5173 http://api:3000
 ```
 
-CI runs linting, formatting, typechecking, unit coverage, builds, Playwright browser tests, and a real Compose smoke/migration check on pull requests and pushes to `main`.
+CI runs code and workflow linting, formatting, typechecking, unit coverage, builds, Playwright browser tests, and a real Compose smoke/migration check on pull requests and pushes to `main`.
 
 Additional useful commands:
 
