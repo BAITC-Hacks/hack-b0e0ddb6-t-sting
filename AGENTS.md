@@ -42,6 +42,14 @@ Goal: a fully working, clean, and well-documented product.
 - `.gitignore` must include: `.env`, `node_modules/`, `venv/`, `.venv/`, `__pycache__/`, build folders, OS and IDE files.
 - Do not commit temporary, scratch, or accidental files.
 
+## Skill Synchronization
+
+- Keep `.agents/skills/` and `.claude/skills/` identical: the same skill directories, relative file paths, and file contents.
+- When adding, editing, renaming, updating, or removing a skill in either location, apply the same change to the other location in the same commit.
+- Synchronize the entire skill directory, including `SKILL.md`, supporting rules, references, scripts, metadata, attribution, and license files. Do not update only the skill entry point.
+- Preserve upstream contents and attribution for vendored skills. Update `docs/EXTERNAL_TOOLS.md` when their source, revision, inventory, or licensing changes.
+- Before committing skill changes, run `diff -qr .agents/skills .claude/skills` from the repository root. It must exit successfully with no output. Resolve every difference before committing; do not exclude files to hide drift.
+
 ## Tests
 
 The project requires **100% meaningful unit test coverage**. Coverage is a consequence of testing behavior, not a goal to be reached by any means.
@@ -106,5 +114,6 @@ Check that:
 - [ ] All dependencies are listed in the dependency file.
 - [ ] `.env.example` is up to date.
 - [ ] The README matches the actual state of the code.
+- [ ] `.agents/skills/` and `.claude/skills/` are identical (`diff -qr .agents/skills .claude/skills`).
 - [ ] All tests pass.
 - [ ] Line and branch coverage is 100%, and every new or changed behavior has meaningful tests.

@@ -4,6 +4,8 @@ A TypeScript workspace for the TΞSTING hackathon team, with a React web applica
 
 [Build Story](BUILD_STORY.md) — our hackathon progress and decisions.
 
+[External tools and agent skills](docs/EXTERNAL_TOOLS.md) — the four vendored Vercel skills, pinned sources, attribution, licensing, and update guidance.
+
 The project needs a dependable foundation for building and checking its core flow. A connection page verifies the complete path from the browser through the API to PostgreSQL, with shared build and test tooling at the repository root.
 
 ![The workspace with a successful browser-to-database connection](docs/images/workspace.png)
