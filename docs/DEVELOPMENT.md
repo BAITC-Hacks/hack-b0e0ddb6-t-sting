@@ -71,7 +71,7 @@ ESLint uses the recommended JavaScript, TypeScript, and React Hooks rules. Prett
 
 Generated dependencies, builds, and coverage output are ignored. Both tools leave `.agents/` and `.claude/` untouched to preserve vendored skill contents; Prettier also preserves `AGENTS.md` and `CLAUDE.md`. Validate skill synchronization with `diff -qr .agents/skills .claude/skills`.
 
-The unit suite has 263 tests and enforces **100% lines, branches, functions, and statements per application file**. Tests cover exact scoring, all 694,395 legal plans, Shapley contributions, replacement analysis, bounded AI tool calls and offline recovery, persistent submissions, configuration, and interactive UI states. Database queries and browser network requests are mocked at their external boundaries; unit tests need no running services.
+The unit suite enforces **100% lines, branches, functions, and statements per application file**. Tests cover exact scoring, all 694,395 legal plans, Shapley contributions, replacement analysis, bounded AI tool calls and offline recovery, persistent submissions, configuration, and interactive UI states. Database queries and browser network requests are mocked at their external boundaries; unit tests need no running services.
 
 Framework bootstrap files are excluded with comments in `vitest.config.mts`. Verify runtime wiring against a running full stack:
 
@@ -171,6 +171,35 @@ docker compose exec -T api npm run migration:run
 ```
 
 Generate migration files locally so they stay in the repository. Review generated SQL before applying it to any database with valuable data.
+
+## DigitalOcean App Platform
+
+Use a Job from the same repository and branch as the API, with source directory `/` (the npm workspace root), trigger **Before every deploy**, and build command `npm run build -w @app/api`. Set its run command to:
+
+```sh
+npx --no-install typeorm migration:run -d apps/api/dist/database/data-source.js
+```
+
+This uses compiled migrations and does not need `ts-node`, which is a development dependency. Keep the API run command as `npm run start -w @app/api`. A failed pre-deploy job blocks the deployment.
+
+Set these runtime variables on **both the API and the migration job**. Replace `db` with the attached database component's name:
+
+| Variable            | App Platform value |
+| ------------------- | ------------------ |
+| `POSTGRES_HOST`     | `${db.HOSTNAME}`   |
+| `POSTGRES_PORT`     | `${db.PORT}`       |
+| `POSTGRES_USER`     | `${db.USERNAME}`   |
+| `POSTGRES_PASSWORD` | `${db.PASSWORD}`   |
+| `POSTGRES_DB`       | `${db.DATABASE}`   |
+| `POSTGRES_CA_CERT`  | `${db.CA_CERT}`    |
+
+The shared TypeORM configuration enables TLS and verifies the server certificate when `POSTGRES_CA_CERT` is nonblank. Supply the PEM certificate contents, not a file path; real newlines and literal `\n` separators are supported. If the database is not attached to the app, download its CA certificate from the database connection details and paste its contents into this variable. Database credentials remain in App Platform settings, never in source control.
+
+`SELF_SIGNED_CERT_IN_CHAIN` means TLS certificate verification failed. Check that `POSTGRES_CA_CERT` contains the CA for the database you connect to, then rebuild and redeploy the API and job so the compiled configuration and runtime variable are both updated. Adding only `DATABASE_URL` or `CA_CERT` does not configure this app. Keep certificate verification enabled; the CA establishes trust for this connection.
+
+Leave `POSTGRES_CA_CERT` empty for local development. When absent or blank, the app preserves the PostgreSQL driver's TLS defaults, including any existing `PGSSLMODE` setting. Automatic schema synchronization and startup migrations remain disabled.
+
+References: [DigitalOcean jobs](https://docs.digitalocean.com/products/app-platform/how-to/manage-jobs/), [database environment bindings](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/), and [node-postgres TLS](https://node-postgres.com/features/ssl).
 
 ## HTTP API
 
